@@ -13,6 +13,8 @@ namespace Library.Models
     public class Book
     {
         [Key]
+        public int id { get; set; }
+        [Required]
         public string Isbn { get; set; }
         [Required]
         public string Title { get; set; }

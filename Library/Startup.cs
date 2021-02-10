@@ -25,8 +25,9 @@ namespace Library
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
 
+            // "recompiles" the webpage on view change + F5
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDbContext<BooksContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BooksContext")));
         }
@@ -51,7 +52,7 @@ namespace Library
 
             app.UseAuthorization();
 
-            //admvc?
+            // Routers
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
