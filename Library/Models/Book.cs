@@ -13,7 +13,7 @@ namespace Library.Models
     public class Book
     {
         [Key]
-        public int id { get; set; }
+        public int ID { get; set; }
         [Required]
         public string Isbn { get; set; }
         [Required]
@@ -21,7 +21,9 @@ namespace Library.Models
         public string Author { get; set; }
         [Required]
         public string Genre { get; set; }
-        public DateTime? ReleaseDate { get; set; }
+        public DateTime? YearWritten { get; set; }
+        [Required]
+        public int Pages { get; set; }
         public string Summary { get; set; }
 
     }

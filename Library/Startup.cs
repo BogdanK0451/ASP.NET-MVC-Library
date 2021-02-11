@@ -28,8 +28,10 @@ namespace Library
 
             // "recompiles" the webpage on view change + F5
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            services.AddDbContext<BooksContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("BooksContext")));
+
+            services.AddDbContext<BookContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("BookContext")));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
