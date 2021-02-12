@@ -5,73 +5,112 @@
 }
 
 
+@{ int j = 0;}
+@foreach (var item in Model)
+{
+    <div id="modal_@j" class="modal">
 
-<style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
+        <!-- Modal content -->
+        <div class="modal-content">
+            <h5>@item.Title</h5>
+            <p>@item.Summary</p>
+        </div>
 
-    
-     
-</style>
+    </div>
+    j++;
+}
 
 <section class="py-5 text-center container">
     <h1 class="fw-light">Available</h1>
 </section>
 <div class="album py-5 bg-light">
     <div class="container">
-        @{int i = 0;}
+        @*checking if book was already shown*@
+        @{int i = 0;
+            List<String> shownISBNs = new List<string>();
+        }
         @foreach (var item in Model)
         {
-            string Author;
-            string yearWritten;
-            if (String.IsNullOrEmpty(item.Author))
-                Author = "N/A";
-            else
-                Author = item.Author;
-            //incase YearWritten is null (this field in database is nullable) print N/A
-            if (item.YearWritten.HasValue)
-                yearWritten = "Year: "+item.YearWritten.Value.Year.ToString();
-            else
-                yearWritten = "Year: N/A";
-            string titleAndAuthor = item.Title + " by " + Author;
-            @if (i % 3 == 0)
+            @if (!shownISBNs.Contains(item.Isbn))
             {
-                @Html.Raw("<div class=\"row row-eq-height\">")
-            }
-                    <div class="col-md-4" >
-                        <div class="card shadow-sm">
+                string author;
+                string yearWritten;
+                @if (String.IsNullOrEmpty(item.Author))
+                    author = "N/A";
+                else
+                    author = item.Author;
+                //incase YearWritten is null (this field in database is nullable) print N/A
+                @if (item.YearWritten.HasValue)
+                    yearWritten = "Year: " + item.YearWritten.Value.Year.ToString();
+                else
+                    yearWritten = "Year: N/A";
+                string titleAndAuthor = item.Title + " by " + author;
+                @if (i % 3 == 0)
+                {
+                    @Html.Raw("<div class=\"row row-eq-height\">")
+                }
 
-                            @if (item.ImageUrl != null)
-                            {
+
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+
+                        @if (item.ImageUrl != null)
+                        {
                             <img style="object-fit:contain;height:300px;width:100%" src="@Url.Content(item.ImageUrl)" />
-                            }
-                            else
-                            {
-                                <img style="object-fit:contain;height:300px;width:100%"   src="@Url.Content("/images/default-image.jpg")" />
-                            }
+                        }
+                        else
+                        {
+                            <img style="object-fit:contain;height:300px;width:100%" src="@Url.Content("/images/default-image.jpg")" />
+                        }
 
-                            <div class="card-body">
-                                <p class="card-text" style="height:50px; overflow:auto;">@titleAndAuthor</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Reserve</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Summary</button>
-                                    </div>
-                                    <small class="text-muted font-weight-bold"> 
-                                        @yearWritten
-                                    </small>
+                        <div class="card-body">
+                            <p class="card-text" style="height:50px; overflow:auto;">@titleAndAuthor</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Reserve</button>
+                                    <button type="button" id="summary_@i" class="btn btn-sm btn-outline-secondary summary">Summary</button>
                                 </div>
+                                <small class="text-muted font-weight-bold">
+                                    @yearWritten
+                                </small>
                             </div>
                         </div>
                     </div>
-           
-            @if (i % 3 == 2) { @Html.Raw("</div>")}
-            i++;
+                </div>
+
+                @if (i % 3 == 2)
+                {@Html.Raw("</div>")}
+                i++;
+                shownISBNs.Add(item.Isbn);
+            }
         }
+
     </div>
 </div>
+
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+        ////probably a non optimal location for js..??
+        let summary_buttons = document.querySelectorAll(".summary");
+        summary_buttons.forEach(summary_button => {
+            summary_button.addEventListener("click", showSummary)
+        })
+
+        windo
+        function showSummary(e) {
+            //extract number from id
+            console.log(e.target.id.replace(/[^0-9]/g, ""));
+            let modal_index = e.target.id.replace(/[^0-9]/g, "");
+            let modal = document.querySelector(`#modal_${modal_index}`);
+            //show book summary popup
+            modal.style.display = "block";
+            window.addEventListener("click", e => { if (e.target == modal) modal.style.display = "none" })
+            window.removeEventListener("click");
+        }
+
+    </script>
+}

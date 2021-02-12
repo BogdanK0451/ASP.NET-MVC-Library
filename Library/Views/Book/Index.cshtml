@@ -40,8 +40,15 @@
     <tbody>
         @foreach (var item in Model)
         {
-            System.Diagnostics.Debug.WriteLine(item.YearWritten);
-            System.Diagnostics.Debug.WriteLine(item.YearWritten);
+            string summary;
+            @if(String.IsNullOrEmpty(item.Summary))
+            {
+                summary = "N/A";
+            }
+            else
+            {
+                summary = item.Summary.Substring(0,100)+"...";
+            }
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Isbn)
@@ -56,24 +63,21 @@
                     @Html.DisplayFor(modelItem => item.Genre)
                 </td>
                 <td>
-                    @{  string yearWritten;
+                    @{ string yearWritten;
 
                         //incase YearWritten is null (this field in database is nullable) print N/A
                         if (item.YearWritten.HasValue)
                             yearWritten = item.YearWritten.Value.Year.ToString();
                         else
                             yearWritten = "N/A";
-                        }
-
+                    }
                     @yearWritten
-
-
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Pages)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Summary)
+                    @summary
                 </td>
                 <td>@Html.DisplayFor(modelItem => item.ImageUrl)</td>
                 <td>
