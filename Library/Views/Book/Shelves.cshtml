@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Library.Models.Book>
+
+@{
+    ViewData["Title"] = "Bookshelf";
+}
+
+
+
+<style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+    
+     
+</style>
+
+<section class="py-5 text-center container">
+    <h1 class="fw-light">Available</h1>
+</section>
+<div class="album py-5 bg-light">
+    <div class="container">
+        @{int i = 0;}
+        @foreach (var item in Model)
+        {
+            string Author;
+            string yearWritten;
+            if (String.IsNullOrEmpty(item.Author))
+                Author = "N/A";
+            else
+                Author = item.Author;
+            //incase YearWritten is null (this field in database is nullable) print N/A
+            if (item.YearWritten.HasValue)
+                yearWritten = "Year: "+item.YearWritten.Value.Year.ToString();
+            else
+                yearWritten = "Year: N/A";
+            string titleAndAuthor = item.Title + " by " + Author;
+            @if (i % 3 == 0)
+            {
+                @Html.Raw("<div class=\"row row-eq-height\">")
+            }
+                    <div class="col-md-4" >
+                        <div class="card shadow-sm">
+
+                            @if (item.ImageUrl != null)
+                            {
+                            <img style="object-fit:contain;height:300px;width:100%" src="@Url.Content(item.ImageUrl)" />
+                            }
+                            else
+                            {
+                                <img style="object-fit:contain;height:300px;width:100%"   src="@Url.Content("/images/default-image.jpg")" />
+                            }
+
+                            <div class="card-body">
+                                <p class="card-text" style="height:50px; overflow:auto;">@titleAndAuthor</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">Reserve</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">Summary</button>
+                                    </div>
+                                    <small class="text-muted font-weight-bold"> 
+                                        @yearWritten
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+           
+            @if (i % 3 == 2) { @Html.Raw("</div>")}
+            i++;
+        }
+    </div>
+</div>

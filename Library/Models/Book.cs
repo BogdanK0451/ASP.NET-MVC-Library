@@ -15,6 +15,7 @@ namespace Library.Models
         [Key]
         public int ID { get; set; }
         [Required]
+        [StringLength(13,MinimumLength =13)]
         public string Isbn { get; set; }
         [Required]
         public string Title { get; set; }
@@ -25,6 +26,9 @@ namespace Library.Models
         [Required]
         public int Pages { get; set; }
         public string Summary { get; set; }
+        [DataType(DataType.ImageUrl)]
+        [Display(Name ="Cover")]
+        public string ImageUrl { get; set; }
 
     }
 }

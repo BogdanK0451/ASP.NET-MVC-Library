@@ -18,6 +18,12 @@ namespace Library.Controllers
             _context = context;
         }
 
+
+        public async Task<IActionResult> Shelves()
+        { 
+            return View(await _context.Book.ToListAsync()); 
+        }
+
         // GET: Book
         public async Task<IActionResult> Index()
         {
@@ -53,8 +59,9 @@ namespace Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary")] Book book)
-        {
+
+        public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,ImageUrl")] Book book)
+        {  //checks if there are any validation errors
             if (ModelState.IsValid)
             {
                 _context.Add(book);
@@ -85,7 +92,7 @@ namespace Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,ImageUrl")] Book book)
         {
             if (id != book.ID)
             {

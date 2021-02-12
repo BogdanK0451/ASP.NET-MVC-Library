@@ -33,6 +33,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Summary)
             </th>
+            <th>Cover URL</th>
             <th></th>
         </tr>
     </thead>
@@ -74,6 +75,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Summary)
                 </td>
+                <td>@Html.DisplayFor(modelItem => item.ImageUrl)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
