@@ -454,6 +454,10 @@ F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Delet
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Details.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Edit.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Index.cshtml.g.cs
-F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Popular\RandomSelection.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Popular.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Shelves.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Create.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Delete.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Details.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Edit.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Index.cshtml.g.cs

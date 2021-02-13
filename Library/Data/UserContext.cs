@@ -8,13 +8,11 @@ namespace Library.Models
 {
     public class UserContext : DbContext
     {
-            public UserContext(DbContextOptions<UserContext> options)
-                : base(options)
-            {
-            }
+        public UserContext (DbContextOptions<UserContext> options)
+            : base(options)
+        {
+        }
 
-            public DbSet<User> User { get; set; }
+        public DbSet<Library.Models.User> User { get; set; }
     }
-
 }
-

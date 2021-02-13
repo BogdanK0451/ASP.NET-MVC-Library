@@ -31,6 +31,9 @@ namespace Library
 
             services.AddDbContext<BookContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("BookContext")));
+
+            services.AddDbContext<UserContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
             
         }
 

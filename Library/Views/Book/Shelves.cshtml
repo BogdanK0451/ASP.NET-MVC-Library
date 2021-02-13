@@ -9,13 +9,10 @@
 @foreach (var item in Model)
 {
     <div id="modal_@j" class="modal">
-
-        <!-- Modal content -->
         <div class="modal-content">
             <h5>@item.Title</h5>
             <p>@item.Summary</p>
         </div>
-
     </div>
     j++;
 }
@@ -100,16 +97,14 @@
             summary_button.addEventListener("click", showSummary)
         })
 
-        windo
         function showSummary(e) {
             //extract number from id
-            console.log(e.target.id.replace(/[^0-9]/g, ""));
             let modal_index = e.target.id.replace(/[^0-9]/g, "");
             let modal = document.querySelector(`#modal_${modal_index}`);
             //show book summary popup
             modal.style.display = "block";
-            window.addEventListener("click", e => { if (e.target == modal) modal.style.display = "none" })
-            window.removeEventListener("click");
+            let clickListener=window.addEventListener("click", e => { if (e.target == modal) modal.style.display = "none" })
+            window.removeEventListener("click",clickListener);
         }
 
     </script>

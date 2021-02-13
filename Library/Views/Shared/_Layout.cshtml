@@ -39,17 +39,29 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark ">Transactions</a>
                         </li>
-                        <li class="nav-item" style="position:absolute;right:75px">
-                            <a class="nav-link text-dark ">Register</a>
+                        <li class="nav-item" style="cursor:pointer;position:absolute;right:75px">
+                            <a  id="sign_up" class="nav-link text-dark ">Sign Up</a>
                         </li>
-                        <li class="nav-item" style="position:absolute;right:15px">
-                            <a class="nav-link text-dark ">Sign In</a>
+                        <li class="nav-item" style="cursor: pointer; position: absolute; right: 15px">
+                            <a  id="sign_in" class="nav-link text-dark ">Sign In</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+    <div id="sign_up_modal" class="modal">
+        <div class="modal-content">
+            <h5>Sign Up</h5>
+            <p>lmao</p>
+        </div>
+    </div>
+    <div id="sign_in_modal" class="modal">
+        <div class="modal-content">
+            <h5>Sign In</h5>
+            <p>Lmao</p>
+        </div>
+    </div>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -69,3 +81,21 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<script type="text/javascript">
+    ////probably a non optimal location for js..??
+    let signUp = document.querySelector("#sign_up");
+    let signIn = document.querySelector("#sign_in");
+    console.log(sign_up);
+    signUp.addEventListener("click", showForm);
+    signIn.addEventListener("click", showForm);
+
+    function showForm(e) {
+        console.log(e.target);
+        let selectedModal=document.querySelector("#"+e.target.id + "_modal");
+        selectedModal.style.display = "block";
+        let clickListener =window.addEventListener("click", e => { if (e.target == selectedModal) selectedModal.style.display = "none" })
+        window.removeEventListener("click",clickListener);
+    }
+
+</script>
