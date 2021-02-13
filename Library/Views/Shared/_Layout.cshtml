@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Library</title>
@@ -12,7 +11,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Library</a>
+                <a class="navbar-brand"><b>Library</b></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -40,28 +39,66 @@
                             <a class="nav-link text-dark ">Transactions</a>
                         </li>
                         <li class="nav-item" style="cursor:pointer;position:absolute;right:75px">
-                            <a  id="sign_up" class="nav-link text-dark ">Sign Up</a>
+                            <a id="sign_up" class="nav-link text-dark " asp-controller="User" asp-action="Sign_Up">Sign Up</a>
                         </li>
                         <li class="nav-item" style="cursor: pointer; position: absolute; right: 15px">
-                            <a  id="sign_in" class="nav-link text-dark ">Sign In</a>
+                            <a id="sign_in" class="nav-link text-dark " asp-controller="User" asp-action="Sign_In">Sign In</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div id="sign_up_modal" class="modal">
-        <div class="modal-content">
-            <h5>Sign Up</h5>
-            <p>lmao</p>
-        </div>
-    </div>
-    <div id="sign_in_modal" class="modal">
+
+
+    @*  Error	CS1963	An expression tree may not contain a dynamic operation
+
+            <div id="sign_up_modal" class="modal">
+            <div class="modal-content">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PermissionLevel" class="control-label"></label>
+                        <input asp-for="PermissionLevel" class="form-control" />
+                        <span asp-validation-for="PermissionLevel" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BooksHeld" class="control-label"></label>
+                        <input asp-for="BooksHeld" class="form-control" />
+                        <span asp-validation-for="BooksHeld" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>*@
+    @*<div id="sign_in_modal" class="modal">
         <div class="modal-content">
             <h5>Sign In</h5>
             <p>Lmao</p>
         </div>
-    </div>
+    </div>*@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -81,21 +118,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-<script type="text/javascript">
-    ////probably a non optimal location for js..??
-    let signUp = document.querySelector("#sign_up");
-    let signIn = document.querySelector("#sign_in");
-    console.log(sign_up);
-    signUp.addEventListener("click", showForm);
-    signIn.addEventListener("click", showForm);
-
-    function showForm(e) {
-        console.log(e.target);
-        let selectedModal=document.querySelector("#"+e.target.id + "_modal");
-        selectedModal.style.display = "block";
-        let clickListener =window.addEventListener("click", e => { if (e.target == selectedModal) selectedModal.style.display = "none" })
-        window.removeEventListener("click",clickListener);
-    }
-
-</script>

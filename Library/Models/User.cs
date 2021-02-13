@@ -15,30 +15,31 @@ namespace Library.Models
          public int ID { get; set; }
        
         [Required]
-         [StringLength(50, MinimumLength = 3)]
+        [Display(Name = "First Name")]
+        [StringLength(50, MinimumLength = 3)]
          public string FirstName { get; set; }
     
         [Required]
+        [Display(Name = "Last Name")]
         [StringLength(50, MinimumLength = 3)]
          public string LastName { get; set; }
        
         [Required]
-        [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}")]
+        [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", ErrorMessage = "Wrong email format")]
         public string Email { get; set; }
 
         [Required]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,15}$")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Password must contain eight characters, at least one uppercase letter, one lowercase letter, one number and one special character")]
         public string Password { get; set; }
 
         [NotMapped]
         [Required]
+        [Display(Name = "Confirm Password")]
         [System.ComponentModel.DataAnnotations.Compare("Password")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
         public int PermissionLevel { get; set; } = 1;
 
-        [Required]
         public int BooksHeld { get; set; } = 0;
     }
 }

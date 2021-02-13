@@ -1,16 +1,15 @@
 ﻿@model Library.Models.User
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Sign Up";
 }
 
-<h1>Create</h1>
+<h1>Sign Up</h1>
 
-<h4>User</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Sign_Up">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -29,28 +28,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input type="password" asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PermissionLevel" class="control-label"></label>
-                <input asp-for="PermissionLevel" class="form-control" />
-                <span asp-validation-for="PermissionLevel" class="text-danger"></span>
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input type="password" asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BooksHeld" class="control-label"></label>
-                <input asp-for="BooksHeld" class="form-control" />
-                <span asp-validation-for="BooksHeld" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Finish" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

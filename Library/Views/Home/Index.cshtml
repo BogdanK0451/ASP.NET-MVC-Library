@@ -1,11 +1,22 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div class="jumbotron">
-    <h1>IBJOffice</h1>
-</div>
+
+
 
 <div class="text-center">
-    <h1 class="display-4">Test</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome!</h1>
+
+    @if (TempData["Success"] !=null)
+    {
+        <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
+    }
+    else if (TempData["Failure"] != null)
+    {
+        <p class="alert alert-danger" id="failureMessage">@TempData["Failure"]</p>
+    }
+    else
+    {
+        <p>You can freely browse the book listings by pressing <b>Bookshelves</b> or <b>Popular</b> in the navbar, or you can register/log in, by pressing <b>Sign Up/Sign In</b>.</p>
+    }
 </div>

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Library.Models;
+using System.Net.Mail;
+using System.Net;
+using System.Text;
 
 namespace Library.Controllers
 {
@@ -17,7 +20,6 @@ namespace Library.Controllers
         {
             _context = context;
         }
-
         // GET: User
         public async Task<IActionResult> Index()
         {
@@ -42,30 +44,70 @@ namespace Library.Controllers
             return View(user);
         }
 
-        // GET: User/Create
-        public IActionResult Create()
+        // GET: User/Create  , add new user
+        public IActionResult Sign_Up()
         {
             return View();
         }
-
-        // POST: User/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email,Password,PermissionLevel,BooksHeld")] User user)
+        public async Task<IActionResult> Sign_Up([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User user)
         {
-            if (ModelState.IsValid)
+
+            //checking if email already exists in the database
+            var queryableResult = _context.User.Where(u => u.Email == user.Email);
+            var result = queryableResult.ToList();
+            if (ModelState.IsValid && !result.Any())
             {
+
+                // authentication issues
+                //SendEmail(user.Email, "Your Library Account", "Congratulations!\n Your account has been Successfully created!");
+
+                //success, hence, show the user that he succesfully created an account
+                TempData["Success"] = "Congratulations, you've successfully created an account, feel free to sign in";
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            return View(user);
+            else
+            {
+                TempData["Failure"] = "Sorry, the email is already taken";
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+        }
+        // GET: User/Sign_In
+        public IActionResult Sign_In()
+        {
+
+
+            return View();
+        }
+        // POST: User/Sign_In
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Sign_In(string email, string password)
+        {
+            System.Diagnostics.Debug.WriteLine(password);
+            var queryableResult = _context.User.Where(u => u.Email == email && u.Password == password);
+            var result = queryableResult.ToList();
+            System.Diagnostics.Debug.WriteLine(result);
+            foreach( var el in result)
+            {
+                System.Diagnostics.Debug.WriteLine(el.Password);
+                System.Diagnostics.Debug.WriteLine(password);
+            }
+            if (!result.Any()) {
+                TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else {
+                TempData["Success"] = "You've successfully logged in!";
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
         }
 
-        // GET: User/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+            // GET: User/Edit/5
+            public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -81,8 +123,6 @@ namespace Library.Controllers
         }
 
         // POST: User/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email,Password,PermissionLevel,BooksHeld")] User user)
@@ -147,6 +187,22 @@ namespace Library.Controllers
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.ID == id);
+        }
+
+        public void SendEmail(string toEmail, string subject, string emailBody)
+        {
+            string senderEmail = "projectsendemail@gmail.com";
+            string senderPassword = "emailsender123";
+            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+            client.UseDefaultCredentials = true;
+            client.EnableSsl = true;
+            client.Timeout = 500000;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.Credentials = new NetworkCredential(senderEmail, senderPassword);
+            MailMessage mailMessage = new MailMessage(senderEmail, toEmail, subject, emailBody);
+            mailMessage.IsBodyHtml = true;
+            mailMessage.BodyEncoding = UTF8Encoding.UTF8;
+            client.Send(mailMessage);
         }
     }
 }
