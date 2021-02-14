@@ -9,11 +9,20 @@ using Library.Models;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
+using static System.Diagnostics.Debug;
+using Microsoft.AspNetCore.Http;
+
+
 
 namespace Library.Controllers
 {
     public class UserController : Controller
     {
+        const string SessionId = "Id";
+        const string SessionPermissionLevel = "permissionLevel";
+
+        const int LOGGED_OUT = 0;
+
         private readonly UserContext _context;
 
         public UserController(UserContext context)
@@ -87,27 +96,33 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Sign_In(string email, string password)
         {
-            System.Diagnostics.Debug.WriteLine(password);
+   
             var queryableResult = _context.User.Where(u => u.Email == email && u.Password == password);
             var result = queryableResult.ToList();
-            System.Diagnostics.Debug.WriteLine(result);
-            foreach( var el in result)
-            {
-                System.Diagnostics.Debug.WriteLine(el.Password);
-                System.Diagnostics.Debug.WriteLine(password);
-            }
+
+            //if query result empty
             if (!result.Any()) {
                 TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
+                foreach (var el in result)
+                {
+                    ViewData["accessLevel"] = LOGGED_OUT;
+                }
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
             else {
+
+                foreach (var el in result)
+                {
+                    HttpContext.Session.SetString(SessionId, el.Email);
+                    HttpContext.Session.SetString(SessionPermissionLevel, el.PermissionLevel.ToString());
+                }
                 TempData["Success"] = "You've successfully logged in!";
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
         }
 
-            // GET: User/Edit/5
-            public async Task<IActionResult> Edit(int? id)
+        // GET: User/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {

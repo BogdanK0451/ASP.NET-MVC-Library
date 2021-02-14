@@ -34,7 +34,13 @@ namespace Library
 
             services.AddDbContext<UserContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
-            
+
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
+
+            services.AddHttpContextAccessor();
+            services.AddDistributedMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +56,9 @@ namespace Library
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();
