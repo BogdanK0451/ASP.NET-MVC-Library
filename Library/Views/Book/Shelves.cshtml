@@ -22,16 +22,33 @@
 </section>
 <div class="album py-5 bg-light">
     <div class="container">
+        @functions{
+            public Dictionary<string, int> countHelper(IEnumerable<Book> model)
+            {
+                Dictionary<string, int> unusedBooksCount = new Dictionary<string, int>();
+                foreach (var item in model) {
+                    if (!unusedBooksCount.ContainsKey(item.Isbn))
+                    {
+                        unusedBooksCount.Add(item.Isbn, 0);
+                        if (item.Taken == false)
+                        {
+                            unusedBooksCount[item.Isbn] += 1;
+                        }
+                    }
+                }
+                return unusedBooksCount;
+            }
+        }
 
         @{
             int i = 0;
             List<String> shownISBNs = new List<string>();
-            Dictionary<string, int> bookQuantityCount = new Dictionary<string, int>();
+            Dictionary<string, int> unusedBooksCount = countHelper(Model);
         }
-
 
         @foreach (var item in Model)
         {
+
             //check if book was already shown
             @if (!shownISBNs.Contains(item.Isbn))
             {
@@ -51,7 +68,8 @@
                 {
                     @Html.Raw("<div class=\"row row-eq-height\">")
                 }
-                string bookInfo =yearWritten;
+                string available = unusedBooksCount[item.Isbn] > 0 ? "Yes" : "No";
+
 
 
                 <div class="col-md-4">
@@ -70,11 +88,22 @@
                             <p class="card-text" style="height:50px; overflow:auto;">@titleAndAuthor</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Reserve</button>
+                                    @{ if (unusedBooksCount[item.Isbn] > 0)
+                                        {<button type="button" class="btn btn-sm btn-outline-secondary">Reserve</button>}
+                                        else
+                                        {
+                                            {<button type="button" disabled class="btn btn-sm btn-outline-secondary">Reserve</button>}
+                                        }
+                                    }
                                     <button type="button" id="summary_@i" class="btn btn-sm btn-outline-secondary summary">Summary</button>
                                 </div>
                                 <small class="text-muted font-weight-bold">
-                                    @bookInfo
+                                    <span> Available: </span>
+                                    @if (unusedBooksCount[item.Isbn] > 0)
+                                    {<span style="margin-right:10px; color:green">@available</span>}
+                                    else
+                                    {<span style="margin-right:10px; color:red">@available</span>}
+                                    <span>@yearWritten</span>
                                 </small>
                             </div>
                         </div>
@@ -101,6 +130,10 @@
         summary_buttons.forEach(summary_button => {
             summary_button.addEventListener("click", showSummary)
         })
+
+        function Available(e) {
+
+        }
 
         function showSummary(e) {
             //extract number from id

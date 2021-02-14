@@ -60,10 +60,12 @@ namespace Library.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,ImageUrl")] Book book)
+        public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,ImageUrl,Taken")] Book book)
         {  //checks if there are any validation errors
             if (ModelState.IsValid)
             {
+                book.ImageUrl = "/images/" + book.ImageUrl;
+
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -154,6 +156,11 @@ namespace Library.Controllers
         private bool BookExists(int id)
         {
             return _context.Book.Any(e => e.ID == id);
+        }
+        //GET: Book/Transactions
+        public IActionResult Transactions()
+        {
+            return View();
         }
     }
 }

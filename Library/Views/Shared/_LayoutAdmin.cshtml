@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,13 +30,13 @@
                             <a class="nav-link text-dark ">Counter</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark ">Transactions</a>
+                            <a class="nav-link text-dark"  asp-area="" asp-controller="Book" asp-action="Transactions" >Transactions</a>
                         </li>
-                        <li class="nav-item" style="cursor:pointer;position:absolute;right:75px">
-                            <a id="sign_up" class="nav-link text-dark " asp-controller="User" asp-action="Sign_Up">Sign Up</a>
+                        <li class="nav-item" style="position: absolute; right: 75px">
+                            <p class="nav-link">@HttpContextAccessor.HttpContext.Session.GetString("userName")</p>
                         </li>
                         <li class="nav-item" style="cursor: pointer; position: absolute; right: 15px">
-                            <a id="sign_in" class="nav-link text-dark " asp-controller="User" asp-action="Sign_In">Sign In</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Sign_Out">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -83,11 +88,11 @@
             </div>
         </div>*@
     @*<div id="sign_in_modal" class="modal">
-        <div class="modal-content">
-            <h5>Sign In</h5>
-            <p>Lmao</p>
-        </div>
-    </div>*@
+            <div class="modal-content">
+                <h5>Sign In</h5>
+                <p>Lmao</p>
+            </div>
+        </div>*@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

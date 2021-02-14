@@ -29,6 +29,8 @@ namespace Library.Models
         [DataType(DataType.ImageUrl)]
         [Display(Name ="Cover")]
         public string ImageUrl { get; set; }
+        //does required imply that the field is required during Form filling or inside the database or both?
+        public bool Taken { get; set; } = false;
 
     }
 }
