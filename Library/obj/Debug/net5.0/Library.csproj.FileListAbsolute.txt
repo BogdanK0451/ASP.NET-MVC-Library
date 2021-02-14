@@ -26,7 +26,6 @@ F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Library.RazorCoreGener
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Home\Privacy.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\Error.cshtml.g.cs
-F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_Layout.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\_ViewImports.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\_ViewStart.cshtml.g.cs
@@ -463,4 +462,7 @@ F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Index
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Sign_Up.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Sign_In.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutLoggedUser.cshtml.g.cs
-F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutUser.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutDefault.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Counter.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Transactions.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutAdmin.cshtml.g.cs

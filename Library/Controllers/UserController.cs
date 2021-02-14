@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace Library.Controllers
     public class UserController : Controller
     {
         const string SessionId = "Id";
-        const string SessionPermissionLevel = "permissionLevel";
+        const string SessionAccessLevel = "accessLevel";
+        const string SessionName = "userName";
 
         const int LOGGED_OUT = 0;
 
@@ -76,19 +78,17 @@ namespace Library.Controllers
                 TempData["Success"] = "Congratulations, you've successfully created an account, feel free to sign in";
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "Home");
             }
             else
             {
                 TempData["Failure"] = "Sorry, the email is already taken";
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "Home");
             }
         }
         // GET: User/Sign_In
         public IActionResult Sign_In()
         {
-
-
             return View();
         }
         // POST: User/Sign_In
@@ -103,22 +103,29 @@ namespace Library.Controllers
             //if query result empty
             if (!result.Any()) {
                 TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
-                foreach (var el in result)
-                {
-                    ViewData["accessLevel"] = LOGGED_OUT;
-                }
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "Home");
             }
             else {
 
                 foreach (var el in result)
                 {
                     HttpContext.Session.SetString(SessionId, el.Email);
-                    HttpContext.Session.SetString(SessionPermissionLevel, el.PermissionLevel.ToString());
+                    HttpContext.Session.SetString(SessionAccessLevel, el.PermissionLevel.ToString());
+                    HttpContext.Session.SetString(SessionName, FullName(el.FirstName,el.LastName));
                 }
                 TempData["Success"] = "You've successfully logged in!";
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "Home");
             }
+        }
+
+
+        // GET: Index page
+        public IActionResult Sign_Out()
+        {
+            HttpContext.Session.Remove(SessionId);
+            HttpContext.Session.SetString(SessionAccessLevel, "0");
+            HttpContext.Session.Remove(SessionName);
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: User/Edit/5
@@ -136,6 +143,7 @@ namespace Library.Controllers
             }
             return View(user);
         }
+
 
         // POST: User/Edit/5
         [HttpPost]
@@ -218,6 +226,10 @@ namespace Library.Controllers
             mailMessage.IsBodyHtml = true;
             mailMessage.BodyEncoding = UTF8Encoding.UTF8;
             client.Send(mailMessage);
+        }
+        public string FullName(string firstName, string lastName)
+        {
+            return firstName + " " + lastName;
         }
     }
 }

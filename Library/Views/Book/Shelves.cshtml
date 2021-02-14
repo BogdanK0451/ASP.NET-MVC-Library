@@ -22,12 +22,17 @@
 </section>
 <div class="album py-5 bg-light">
     <div class="container">
-        @*checking if book was already shown*@
-        @{int i = 0;
+
+        @{
+            int i = 0;
             List<String> shownISBNs = new List<string>();
+            Dictionary<string, int> bookQuantityCount = new Dictionary<string, int>();
         }
+
+
         @foreach (var item in Model)
         {
+            //check if book was already shown
             @if (!shownISBNs.Contains(item.Isbn))
             {
                 string author;
@@ -46,12 +51,12 @@
                 {
                     @Html.Raw("<div class=\"row row-eq-height\">")
                 }
-
+                string bookInfo =yearWritten;
 
 
                 <div class="col-md-4">
                     <div class="card shadow-sm">
-
+                        @*incase image is missing, show default image*@
                         @if (item.ImageUrl != null)
                         {
                             <img style="object-fit:contain;height:300px;width:100%" src="@Url.Content(item.ImageUrl)" />
@@ -69,7 +74,7 @@
                                     <button type="button" id="summary_@i" class="btn btn-sm btn-outline-secondary summary">Summary</button>
                                 </div>
                                 <small class="text-muted font-weight-bold">
-                                    @yearWritten
+                                    @bookInfo
                                 </small>
                             </div>
                         </div>
@@ -103,8 +108,8 @@
             let modal = document.querySelector(`#modal_${modal_index}`);
             //show book summary popup
             modal.style.display = "block";
-            let clickListener=window.addEventListener("click", e => { if (e.target == modal) modal.style.display = "none" })
-            window.removeEventListener("click",clickListener);
+            let clickListener = window.addEventListener("click", e => { if (e.target == modal) modal.style.display = "none" })
+            window.removeEventListener("click", clickListener);
         }
 
     </script>

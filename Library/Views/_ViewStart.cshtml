@@ -1,6 +1,18 @@
-﻿@*//The _ViewStart file can be used to define common view code that you want to execute at the start of each View’s rendering.*@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
 
-@{
-    Layout = "_Layout";
+
+@{ if (HttpContextAccessor.HttpContext.Session.GetString("accessLevel")=="2" || HttpContextAccessor.HttpContext.Session.GetString("accessLevel") == "3")
+    {
+        Layout = "_LayoutAdmin";
+    }
+    else if (HttpContextAccessor.HttpContext.Session.GetString("accessLevel") == "1")
+    {
+        Layout = "_LayoutLoggedUser";
+    }
+    else
+    {
+        Layout = "_LayoutDefault";
+    }
 }
