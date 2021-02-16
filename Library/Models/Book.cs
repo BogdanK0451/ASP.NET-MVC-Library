@@ -1,9 +1,6 @@
 ﻿//https://www.entityframeworktutorial.net/code-first/simple-code-first-example.aspx
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 //used to attach metadata to class fields, which are used by the DBMS to create the database?
 using System.ComponentModel.DataAnnotations;
 

@@ -12,6 +12,10 @@
                     <h2 class="panel-title">
                         Reservations
                     </h2>
+                    @if (TempData["reservationDeletion"] != null)
+                    {
+                        <p class="alert alert-info" >@TempData["reservationDeletion"]</p>
+                    }
                 </div>
 
                 <table class="table table-hover" style="cursor:default">
@@ -25,8 +29,8 @@
                             <th>Book Name</th>
                             <th>Book Author</th>
                             <th>Requested on</th>
-                            <th>Approve</th>
-                            <th>Cancel</th>
+                            <th>Accept</th>
+                            <th>Decline</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,13 +45,23 @@
                             <td>@res.BookName</td>
                             <td>@res.BookAuthor</td>
                             <td>@res.RequestedAt</td>
-                            <td><button type="button" class="btn btn-primary btn-outline-primary">Approve</button></td>
-                            <td><button type="button" class="btn btn-secondary btn-outline-secondary" style="color:white">Cancel</button></td>
+                            <td>
+                                <form class="form" asp-controller="Order" asp-action="AcceptReservation">
+                                    <input type="Hidden" name="id" value="@res.ID" />
+                                    <input type="submit" value="Accept" class="btn btn-primary btn-outline-secondary" />
+                                </form>
+                            </td>
+                            <td>
+                                <form class="form" asp-controller="Order" asp-action="DeclineReservation">
+                                    <input type="Hidden" name="id" value="@res.ID" />
+                                    <input type="submit" value="Decline" class="btn btn-primary btn-outline-secondary" />
+                                </form>
+                            </td>
                         </tr>
                         }
-
                 </table>
             </div>
         </div>
     </div>
 </div>
+

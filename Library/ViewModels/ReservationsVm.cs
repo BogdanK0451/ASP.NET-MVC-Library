@@ -16,6 +16,7 @@ namespace Library.ViewModels
         public DateTime RequestedAt;
         public int UserID;
         public string FullName;
+        public BorrowedBook BorrowedBook;
 
         public ReservationsVm(int ID, int BookID, string BookISBN, string BookName,string BookAuthor,
             DateTime RequestedAt,int UserID,string FullName)
@@ -23,11 +24,11 @@ namespace Library.ViewModels
            this.ID = ID;
            this.BookID = BookID;
            this.BookISBN = BookISBN;
-           this.BookName=BookName;
-           this.BookAuthor=BookAuthor;
-           this.RequestedAt=RequestedAt;
-           this.UserID=UserID;
-           this.FullName=FullName;
+           this.BookName = BookName;
+           this.BookAuthor = BookAuthor;
+           this.RequestedAt = RequestedAt;
+           this.UserID = UserID;
+           this.FullName = FullName;
 
         }
     }

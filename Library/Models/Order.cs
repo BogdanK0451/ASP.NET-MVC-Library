@@ -11,12 +11,16 @@ namespace Library.Models
     public class Order
     {
         [Key]
-        public string ID { get; set; }
+        public int ID { get; set; }
+        [ForeignKey("Reservation")]
+        public int ReservationID { get; set; }
         [ForeignKey("User")]
         public int CustomerID { get; set; }
         [ForeignKey("Book")]
         public int BookID { get; set; }
         public DateTime ReturnBy { get; set; }
         public string Status { get; set; } = "active";
+        
+
     }
 }

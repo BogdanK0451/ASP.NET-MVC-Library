@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Library.Models;
+using Microsoft.EntityFrameworkCore;
 using Library.ViewModels;
-using static System.Diagnostics.Debug;
 
 namespace Library.Controllers
 {
@@ -36,15 +34,15 @@ namespace Library.Controllers
             }
             return RedirectToAction("Shelves", "Book");
         }
-        public ActionResult Reservations()
+        public async Task<ActionResult> Reservations()
         {
-            var query = _context.Books
+            var query = await _context.Books
                 .Join(_context.Reservations,
                     book => book.ID,
                     reservation => reservation.BookID,
                     (book, reservation) => new
                     {
-                        reservationID = reservation.ID,
+                        ID = reservation.ID,
                         bookID = book.ID,
                         bookISBN = book.Isbn,
                         bookName = book.Title,
@@ -55,7 +53,7 @@ namespace Library.Controllers
                 )
                 .Join(_context.Users, res => res.customerID, user => user.ID,
                 (res, user) => new ReservationsVm(
-                     res.reservationID,
+                     res.ID,
                      res.bookID,
                      res.bookISBN,
                      res.bookName,
@@ -63,7 +61,7 @@ namespace Library.Controllers
                      res.requestedAt,
                      res.customerID,
                      user.FullName
-                )).ToList();
+                )).ToListAsync();
             // why not async+await if we have to wait for database call, and don't want the app to block
 
             return View(query);
@@ -73,6 +71,45 @@ namespace Library.Controllers
         public  ActionResult Transactions()
         {
             return View();
+        }
+
+        public async  Task<ActionResult> AcceptReservation(int id)
+        {
+            var query = _context.Reservations.Where(e => e.ID == id);
+            await query
+                .Join(_context.Users, res => res.CustomerID, user => user.ID,
+                (res, user) => new
+                    {
+                        ID = res.ID,
+                        userID = res.CustomerID,
+                        fullName = user.FullName,
+                        requestedAt = res.RequestedAt
+                    }
+                )
+                .Join(_context.Books, res => res.ID, book => book.ID,
+                (res,book) => new Order(
+                
+                )
+                ).ToListAsync();
+
+            var isSuccessful = await _context.SaveChangesAsync();
+            if (isSuccessful != 0)
+                TempData["reservationAcceptance"] = "reservation was successfully accepted.";
+            else
+                TempData["reservationAcceptance"] = "reservation acceptance failed.";
+            return RedirectToAction("Reservations", "Order");
+        }
+
+        public async Task<ActionResult> DeclineReservation(int id)
+        {
+            var reservation = await _context.Reservations.FindAsync(id);
+            _context.Reservations.Remove(reservation);
+            var isSuccessful=await _context.SaveChangesAsync();
+            if (isSuccessful != 0)
+                TempData["reservationDeletion"] = "reservation was successfully deleted.";
+            else
+                TempData["reservationDeletion"] = "reservation deletion failed.";
+            return RedirectToAction("Reservations", "Order");
         }
     }
 }
