@@ -5,13 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\NewFolder\**" />
     <Compile Remove="wwwroot\lib\NewFolder\**" />
-    <Content Remove="Views\NewFolder\**" />
     <Content Remove="wwwroot\lib\NewFolder\**" />
-    <EmbeddedResource Remove="Views\NewFolder\**" />
     <EmbeddedResource Remove="wwwroot\lib\NewFolder\**" />
-    <None Remove="Views\NewFolder\**" />
     <None Remove="wwwroot\lib\NewFolder\**" />
   </ItemGroup>
 

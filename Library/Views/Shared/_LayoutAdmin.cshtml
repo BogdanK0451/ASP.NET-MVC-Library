@@ -27,13 +27,13 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Administrators Corner</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark ">Counter</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Counter">Counter</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark"  asp-area="" asp-controller="Book" asp-action="Transactions" >Transactions</a>
+                            <a class="nav-link text-dark"  asp-area="" asp-controller="Book" asp-action="Transactions">Transactions</a>
                         </li>
-                        <li class="nav-item" style="position: absolute; right: 75px">
-                            <p class="nav-link">@HttpContextAccessor.HttpContext.Session.GetString("userName")</p>
+                        <li class="nav-item" style="cursor:default; position: absolute; right: 75px">
+                            <p class="nav-link text-dark">@HttpContextAccessor.HttpContext.Session.GetString("userName")</p>
                         </li>
                         <li class="nav-item" style="cursor: pointer; position: absolute; right: 15px">
                             <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Sign_Out">Logout</a>

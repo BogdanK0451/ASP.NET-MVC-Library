@@ -463,6 +463,6 @@ F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Sign_
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Sign_In.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutLoggedUser.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutDefault.cshtml.g.cs
-F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Counter.cshtml.g.cs
-F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Book\Transactions.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutAdmin.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Order\Reservations.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Order\Transactions.cshtml.g.cs

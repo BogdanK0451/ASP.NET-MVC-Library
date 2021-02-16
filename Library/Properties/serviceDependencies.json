@@ -2,11 +2,7 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
-      "connectionId": "BookContext"
-    },
-    "mssql3": {
-      "type": "mssql",
-      "connectionId": "UserContext"
+      "connectionId": "LibraryContext"
     }
   }
 }

@@ -1,4 +1,8 @@
-﻿@model IEnumerable<Library.Models.Book>
+﻿@model Library.ViewModels.BooksAndReservations
+@using System.IO
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 
 @{
     ViewData["Title"] = "Bookshelf";
@@ -6,12 +10,12 @@
 
 
 @{ int j = 0;}
-@foreach (var item in Model)
+@foreach (var book in Model.Books)
 {
     <div id="modal_@j" class="modal">
         <div class="modal-content">
-            <h5>@item.Title</h5>
-            <p>@item.Summary</p>
+            <h5>@book.Title</h5>
+            <p>@book.Summary</p>
         </div>
     </div>
     j++;
@@ -19,20 +23,25 @@
 
 <section class="py-5 text-center container">
     <h1 class="fw-light">Available</h1>
+    @if (TempData["reservationProcessed"] != null)
+    {
+        <p class="alert alert-danger" id="failureMessage">@TempData["reservationProcessed"]</p>
+    }
 </section>
 <div class="album py-5 bg-light">
     <div class="container">
         @functions{
-            public Dictionary<string, int> countHelper(IEnumerable<Book> model)
+            public Dictionary<string, int> countHelper(IEnumerable<Book> books)
             {
                 Dictionary<string, int> unusedBooksCount = new Dictionary<string, int>();
-                foreach (var item in model) {
-                    if (!unusedBooksCount.ContainsKey(item.Isbn))
+                foreach (var book in books)
+                {
+                    if (!unusedBooksCount.ContainsKey(book.Isbn))
                     {
-                        unusedBooksCount.Add(item.Isbn, 0);
-                        if (item.Taken == false)
+                        unusedBooksCount.Add(book.Isbn, 0);
+                        if (book.Borrowed == false)
                         {
-                            unusedBooksCount[item.Isbn] += 1;
+                            unusedBooksCount[book.Isbn] += 1;
                         }
                     }
                 }
@@ -43,41 +52,42 @@
         @{
             int i = 0;
             List<String> shownISBNs = new List<string>();
-            Dictionary<string, int> unusedBooksCount = countHelper(Model);
+            Dictionary<string, int> unusedBooksCount = countHelper(Model.Books);
         }
 
-        @foreach (var item in Model)
+        @foreach (var book in Model.Books)
         {
 
             //check if book was already shown
-            @if (!shownISBNs.Contains(item.Isbn))
+            @if (!shownISBNs.Contains(book.Isbn))
             {
                 string author;
                 string yearWritten;
-                @if (String.IsNullOrEmpty(item.Author))
+                @if (String.IsNullOrEmpty(book.Author))
                     author = "N/A";
                 else
-                    author = item.Author;
+                    author = book.Author;
                 //incase YearWritten is null (this field in database is nullable) print N/A
-                @if (item.YearWritten.HasValue)
-                    yearWritten = "Year: " + item.YearWritten.Value.Year.ToString();
+                @if (book.YearWritten.HasValue)
+                    yearWritten = "Year: " + book.YearWritten.Value.Year.ToString();
                 else
                     yearWritten = "Year: N/A";
-                string titleAndAuthor = item.Title + " by " + author;
+                string titleAndAuthor = book.Title + " by " + author;
                 @if (i % 3 == 0)
                 {
                     @Html.Raw("<div class=\"row row-eq-height\">")
                 }
-                string available = unusedBooksCount[item.Isbn] > 0 ? "Yes" : "No";
+                string available = unusedBooksCount[book.Isbn] > 0 ? "Yes" : "No";
 
 
 
                 <div class="col-md-4">
                     <div class="card shadow-sm">
                         @*incase image is missing, show default image*@
-                        @if (item.ImageUrl != null)
+
+                        @if (File.Exists(Directory.GetCurrentDirectory() + "/wwwroot" + book.ImageUrl))
                         {
-                            <img style="object-fit:contain;height:300px;width:100%" src="@Url.Content(item.ImageUrl)" />
+                            <img style="object-fit:contain;height:300px;width:100%" src="@Url.Content(book.ImageUrl)" />
                         }
                         else
                         {
@@ -86,23 +96,31 @@
 
                         <div class="card-body">
                             <p class="card-text" style="height:50px; overflow:auto;">@titleAndAuthor</p>
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-books-center">
                                 <div class="btn-group">
-                                    @{ if (unusedBooksCount[item.Isbn] > 0)
-                                        {<button type="button" class="btn btn-sm btn-outline-secondary">Reserve</button>}
+                                    @*grey out the button incase there's no books left*@
+                                    @{ if (unusedBooksCount[book.Isbn] > 0 && !String.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("id")) )
+                                        {
+                                            <form class="form" asp-controller="Order" asp-action="CreateReservation">
+                                                <input type="Hidden" asp-for="Reservation.BookID" value="@book.ID" />
+                                                <input type="Hidden" asp-for="Reservation.CustomerID" value="@HttpContextAccessor.HttpContext.Session.GetString("id")" />
+                                                <input type="Hidden" class="dateTime" asp-for="Reservation.RequestedAt" />
+                                                <input type="submit" value="Reserve" class="btn btn-primary btn-outline-secondary" />
+                                            </form>
+                                        }
                                         else
                                         {
-                                            {<button type="button" disabled class="btn btn-sm btn-outline-secondary">Reserve</button>}
+                                            {<button type="button" data-toggle="tooltip" data-placement="top" title="If the book is available, you have to log in" disabled class="btn btn-primary btn-outline-secondary">Reserve</button>}
                                         }
                                     }
                                     <button type="button" id="summary_@i" class="btn btn-sm btn-outline-secondary summary">Summary</button>
                                 </div>
                                 <small class="text-muted font-weight-bold">
                                     <span> Available: </span>
-                                    @if (unusedBooksCount[item.Isbn] > 0)
+                                    @if (unusedBooksCount[book.Isbn] > 0)
                                     {<span style="margin-right:10px; color:green">@available</span>}
-                                    else
-                                    {<span style="margin-right:10px; color:red">@available</span>}
+                                else
+                                {<span style="margin-right:10px; color:red">@available</span>}
                                     <span>@yearWritten</span>
                                 </small>
                             </div>
@@ -113,7 +131,7 @@
                 @if (i % 3 == 2)
                 {@Html.Raw("</div>")}
                 i++;
-                shownISBNs.Add(item.Isbn);
+                shownISBNs.Add(book.Isbn);
             }
         }
 
@@ -131,10 +149,6 @@
             summary_button.addEventListener("click", showSummary)
         })
 
-        function Available(e) {
-
-        }
-
         function showSummary(e) {
             //extract number from id
             let modal_index = e.target.id.replace(/[^0-9]/g, "");
@@ -143,6 +157,21 @@
             modal.style.display = "block";
             let clickListener = window.addEventListener("click", e => { if (e.target == modal) modal.style.display = "none" })
             window.removeEventListener("click", clickListener);
+        }
+
+        let dateTimeInput = document.getElementById("dateTime");
+        let forms = document.querySelectorAll(".form");
+        forms.forEach(form => {
+            form.addEventListener("submit", getCurrentDateTime)
+        })
+
+
+        function getCurrentDateTime(e) {
+            e.preventDefault();
+            let dateTimeInput = e.target.querySelector(".dateTime");
+            dateTimeInput.value = new Date().toISOString();
+            e.target.submit();
+
         }
 
     </script>

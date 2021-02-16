@@ -41,5 +41,13 @@ namespace Library.Models
         public int PermissionLevel { get; set; } = 1;
 
         public int BooksHeld { get; set; } = 0;
+
+        public string FullName
+        {
+            get
+            {
+                return this.FirstName + " " + this.LastName;
+            }
+        }
     }
 }

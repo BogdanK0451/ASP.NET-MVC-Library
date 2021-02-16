@@ -29,11 +29,10 @@ namespace Library
             // "recompiles" the webpage on view change + F5
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-            services.AddDbContext<BookContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("BookContext")));
 
-            services.AddDbContext<UserContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
+            services.AddDbContext<LibraryContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("LibraryContext")));
+
 
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);

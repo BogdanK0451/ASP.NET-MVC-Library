@@ -6,28 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Library.Models;
+using Library.ViewModels;
 
 namespace Library.Controllers
 {
     public class BookController : Controller
     {
-        private readonly BookContext _context;
+        private readonly LibraryContext _context;
 
-        public BookController(BookContext context)
+        public BookController(LibraryContext context)
         {
             _context = context;
         }
 
 
         public async Task<IActionResult> Shelves()
-        { 
-            return View(await _context.Book.ToListAsync()); 
+        {
+            BooksAndReservations booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync());
+            return View(booksandreservations); 
         }
 
         // GET: Book
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Book.ToListAsync());
+            return View(await _context.Books.ToListAsync());
         }
 
         // GET: Book/Details/5
@@ -38,7 +40,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Book
+            var book = await _context.Books
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (book == null)
             {
@@ -51,6 +53,9 @@ namespace Library.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
+            BooksAndGenres booksandgenres= new BooksAndGenres();
+            booksandgenres.Genres = _context.Genres.ToList();
+            ViewData["booksandgenres"] = booksandgenres;
             return View();
         }
 
@@ -60,13 +65,13 @@ namespace Library.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,ImageUrl,Taken")] Book book)
+        public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,Borrowed")] Book book)
         {  //checks if there are any validation errors
             if (ModelState.IsValid)
             {
-                book.ImageUrl = "/images/" + book.ImageUrl;
-
+                book.ImageUrl = "/images/" + book.Title + ".jpg";
                 _context.Add(book);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -81,7 +86,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Book.FindAsync(id);
+            var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
@@ -94,7 +99,7 @@ namespace Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,ImageUrl")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary")] Book book)
         {
             if (id != book.ID)
             {
@@ -132,7 +137,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Book
+            var book = await _context.Books
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (book == null)
             {
@@ -147,15 +152,15 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var book = await _context.Book.FindAsync(id);
-            _context.Book.Remove(book);
+            var book = await _context.Books.FindAsync(id);
+            _context.Books.Remove(book);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BookExists(int id)
         {
-            return _context.Book.Any(e => e.ID == id);
+            return _context.Books.Any(e => e.ID == id);
         }
         //GET: Book/Transactions
         public IActionResult Transactions()

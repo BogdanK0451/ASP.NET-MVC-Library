@@ -19,22 +19,23 @@ namespace Library.Controllers
 {
     public class UserController : Controller
     {
-        const string SessionId = "Id";
+        const string SessionId = "id";
+        const string SessionEmail = "email";
         const string SessionAccessLevel = "accessLevel";
         const string SessionName = "userName";
 
-        const int LOGGED_OUT = 0;
+        const string LOGGED_OUT = "0";
 
-        private readonly UserContext _context;
+        private readonly LibraryContext _context;
 
-        public UserController(UserContext context)
+        public UserController(LibraryContext context)
         {
             _context = context;
         }
         // GET: User
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            return View(await _context.Users.ToListAsync());
         }
 
         // GET: User/Details/5
@@ -45,7 +46,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User
+            var user = await _context.Users
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (user == null)
             {
@@ -64,9 +65,8 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Sign_Up([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User user)
         {
-
             //checking if email already exists in the database
-            var queryableResult = _context.User.Where(u => u.Email == user.Email);
+            var queryableResult = _context.Users.Where(u => u.Email == user.Email);
             var result = queryableResult.ToList();
             if (ModelState.IsValid && !result.Any())
             {
@@ -97,7 +97,7 @@ namespace Library.Controllers
         public ActionResult Sign_In(string email, string password)
         {
    
-            var queryableResult = _context.User.Where(u => u.Email == email && u.Password == password);
+            var queryableResult = _context.Users.Where(u => u.Email == email && u.Password == password);
             var result = queryableResult.ToList();
 
             //if query result empty
@@ -109,9 +109,10 @@ namespace Library.Controllers
 
                 foreach (var el in result)
                 {
-                    HttpContext.Session.SetString(SessionId, el.Email);
+                    HttpContext.Session.SetString(SessionId, el.ID.ToString());
+                    HttpContext.Session.SetString(SessionEmail, el.Email);
                     HttpContext.Session.SetString(SessionAccessLevel, el.PermissionLevel.ToString());
-                    HttpContext.Session.SetString(SessionName, FullName(el.FirstName,el.LastName));
+                    HttpContext.Session.SetString(SessionName, el.FullName);
                 }
                 TempData["Success"] = "You've successfully logged in!";
                 return RedirectToAction("Index", "Home");
@@ -123,7 +124,8 @@ namespace Library.Controllers
         public IActionResult Sign_Out()
         {
             HttpContext.Session.Remove(SessionId);
-            HttpContext.Session.SetString(SessionAccessLevel, "0");
+            HttpContext.Session.Remove(SessionEmail);
+            HttpContext.Session.SetString(SessionAccessLevel, LOGGED_OUT);
             HttpContext.Session.Remove(SessionName);
             return RedirectToAction("Index", "Home");
         }
@@ -136,7 +138,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -186,7 +188,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User
+            var user = await _context.Users
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (user == null)
             {
@@ -201,15 +203,15 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.User.FindAsync(id);
-            _context.User.Remove(user);
+            var user = await _context.Users.FindAsync(id);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
         {
-            return _context.User.Any(e => e.ID == id);
+            return _context.Users.Any(e => e.ID == id);
         }
 
         public void SendEmail(string toEmail, string subject, string emailBody)
@@ -226,10 +228,6 @@ namespace Library.Controllers
             mailMessage.IsBodyHtml = true;
             mailMessage.BodyEncoding = UTF8Encoding.UTF8;
             client.Send(mailMessage);
-        }
-        public string FullName(string firstName, string lastName)
-        {
-            return firstName + " " + lastName;
         }
     }
 }
