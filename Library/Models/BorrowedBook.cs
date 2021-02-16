@@ -15,7 +15,5 @@ namespace Library.Models
         public int CustomerID { get; set; }
         [ForeignKey("Book")]
         public int BookID { get; set; }
-        public DateTime Taken { get; set; }
-        public DateTime ReturnBy { get; set; }
     }
 }

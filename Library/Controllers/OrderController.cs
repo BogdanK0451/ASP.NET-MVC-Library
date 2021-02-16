@@ -22,8 +22,6 @@ namespace Library.Controllers
 
         public async Task<IActionResult> CreateReservation([Bind("ID,BookID,CustomerID,RequestedAt")]Reservation reservation)
         {
-
-
             // BooksAndReservations booksandreservations = new BooksAndReservations();
             if (ModelState.IsValid)
             {
@@ -37,6 +35,44 @@ namespace Library.Controllers
                 return RedirectToAction("Shelves", "Book");
             }
             return RedirectToAction("Shelves", "Book");
+        }
+        public ActionResult Reservations()
+        {
+            var query = _context.Books
+                .Join(_context.Reservations,
+                    book => book.ID,
+                    reservation => reservation.BookID,
+                    (book, reservation) => new
+                    {
+                        reservationID = reservation.ID,
+                        bookID = book.ID,
+                        bookISBN = book.Isbn,
+                        bookName = book.Title,
+                        bookAuthor = book.Author,
+                        requestedAt = reservation.RequestedAt,
+                        customerID = reservation.CustomerID
+                    }
+                )
+                .Join(_context.Users, res => res.customerID, user => user.ID,
+                (res, user) => new ReservationsVm(
+                     res.reservationID,
+                     res.bookID,
+                     res.bookISBN,
+                     res.bookName,
+                     res.bookAuthor,
+                     res.requestedAt,
+                     res.customerID,
+                     user.FullName
+                )).ToList();
+            // why not async+await if we have to wait for database call, and don't want the app to block
+
+            return View(query);
+        }
+
+
+        public  ActionResult Transactions()
+        {
+            return View();
         }
     }
 }

@@ -67,8 +67,8 @@ namespace Library.Controllers
         {
             //checking if email already exists in the database
             var queryableResult = _context.Users.Where(u => u.Email == user.Email);
-            var result = queryableResult.ToList();
-            if (ModelState.IsValid && !result.Any())
+            var query = queryableResult.ToList();
+            if (ModelState.IsValid && !query.Any())
             {
 
                 // authentication issues
@@ -98,16 +98,16 @@ namespace Library.Controllers
         {
    
             var queryableResult = _context.Users.Where(u => u.Email == email && u.Password == password);
-            var result = queryableResult.ToList();
+            var query = queryableResult.ToList();
 
             //if query result empty
-            if (!result.Any()) {
+            if (!query.Any()) {
                 TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
                 return RedirectToAction("Index", "Home");
             }
             else {
 
-                foreach (var el in result)
+                foreach (var el in query)
                 {
                     HttpContext.Session.SetString(SessionId, el.ID.ToString());
                     HttpContext.Session.SetString(SessionEmail, el.Email);

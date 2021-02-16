@@ -25,7 +25,7 @@
     <h1 class="fw-light">Available</h1>
     @if (TempData["reservationProcessed"] != null)
     {
-        <p class="alert alert-danger" id="failureMessage">@TempData["reservationProcessed"]</p>
+        <p class="alert alert-info" id="failureMessage">@TempData["reservationProcessed"]</p>
     }
 </section>
 <div class="album py-5 bg-light">
@@ -110,10 +110,10 @@
                                         }
                                         else
                                         {
-                                            {<button type="button" data-toggle="tooltip" data-placement="top" title="If the book is available, you have to log in" disabled class="btn btn-primary btn-outline-secondary">Reserve</button>}
+                                            {<button type="button" data-toggle="tooltip" data-placement="top" title="If the book is available, you have to log in" disabled class="btn btn-primary btn-outline-primary">Reserve</button>}
                                         }
                                     }
-                                    <button type="button" id="summary_@i" class="btn btn-sm btn-outline-secondary summary">Summary</button>
+                                    <button type="button" id="summary_@i" class="btn btn-sm btn-outline-primary summary">Summary</button>
                                 </div>
                                 <small class="text-muted font-weight-bold">
                                     <span> Available: </span>
