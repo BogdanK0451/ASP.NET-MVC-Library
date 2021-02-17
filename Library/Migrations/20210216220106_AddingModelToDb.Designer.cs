@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20210216172307_AdjustedForeignKeys")]
-    partial class AdjustedForeignKeys
+    [Migration("20210216220106_AddingModelToDb")]
+    partial class AddingModelToDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,12 +93,6 @@ namespace Library.Migrations
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReturnBy")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Taken")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("ID");
 
                     b.ToTable("BorrowedBooks");
@@ -122,8 +116,10 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Models.Order", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int>("BookID")
                         .HasColumnType("int");
@@ -131,7 +127,10 @@ namespace Library.Migrations
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReservationApproved")
+                    b.Property<int>("ReservationID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReturnBy")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")

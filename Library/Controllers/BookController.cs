@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,21 @@ namespace Library.Controllers
             _context = context;
         }
 
+        //public async Task<IActionResult> Returned(int bookId,int orderId)
+        //{
+        //    var order = await _context.Orders.FindAsync(orderId);
+        //    var book = await _context.Books.FindAsync(bookId);
+
+        //    order.ReturnedOn = DateTime.Now;
+        //    order.Status = "completed";
+        //    book.Borrowed = false;
+
+        //    _context.Update(order);
+        //    _context.Remove(book);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction("Transactions", "Order");
+        //}
 
         public async Task<IActionResult> Shelves()
         {
@@ -57,11 +73,8 @@ namespace Library.Controllers
         }
 
         // POST: Book/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,Borrowed")] Book book)
         {  //checks if there are any validation errors
             if (ModelState.IsValid)
@@ -92,8 +105,6 @@ namespace Library.Controllers
         }
 
         // POST: Book/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary")] Book book)

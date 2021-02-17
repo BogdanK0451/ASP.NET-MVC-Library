@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20210216174041_AdjustedFields")]
-    partial class AdjustedFields
+    [Migration("20210216225733_AddedNewFields2")]
+    partial class AddedNewFields2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -116,8 +116,10 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Models.Order", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int>("BookID")
                         .HasColumnType("int");
@@ -125,7 +127,13 @@ namespace Library.Migrations
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
+                    b.Property<int>("ReservationID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ReturnBy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReturnedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")

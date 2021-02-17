@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20210216215122_AdjustedFields3")]
-    partial class AdjustedFields3
+    [Migration("20210216222338_AddedNewFields")]
+    partial class AddedNewFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,6 +131,9 @@ namespace Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReturnBy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ReturnedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.Migrations
 {
-    public partial class AddedLibraryModelsToDb : Migration
+    public partial class AddingModelToDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,9 +30,10 @@ namespace Library.Migrations
                     Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     YearWritten = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Pages = table.Column<int>(type: "int", nullable: false),
-                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Summary = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Borrowed = table.Column<bool>(type: "bit", nullable: false)
+                    Borrowed = table.Column<bool>(type: "bit", nullable: false),
+                    TimesBorrowed = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,9 +47,7 @@ namespace Library.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerID = table.Column<int>(type: "int", nullable: false),
-                    BookID = table.Column<int>(type: "int", nullable: false),
-                    Taken = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReturnBy = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    BookID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,10 +71,12 @@ namespace Library.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CustomerID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BookID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReservationApproved = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReservationID = table.Column<int>(type: "int", nullable: false),
+                    CustomerID = table.Column<int>(type: "int", nullable: false),
+                    BookID = table.Column<int>(type: "int", nullable: false),
+                    ReturnBy = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -91,7 +92,7 @@ namespace Library.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerID = table.Column<int>(type: "int", nullable: false),
                     BookID = table.Column<int>(type: "int", nullable: false),
-                    ReservationRequested = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RequestedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

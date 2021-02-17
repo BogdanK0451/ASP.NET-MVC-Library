@@ -466,3 +466,4 @@ F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_La
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Shared\_LayoutAdmin.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Order\Reservations.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Order\Transactions.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\Borrowed_Books.cshtml.g.cs

@@ -131,6 +131,9 @@ namespace Library.Migrations
                     b.Property<DateTime>("ReturnBy")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReturnedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 

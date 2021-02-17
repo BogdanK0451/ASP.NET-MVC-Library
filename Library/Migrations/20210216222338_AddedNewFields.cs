@@ -1,23 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.Migrations
 {
-    public partial class AdjustedFields2 : Migration
+    public partial class AddedNewFields : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "ReservationID",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ReturnedOn",
                 table: "Orders",
-                type: "int",
+                type: "datetime2",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ReservationID",
+                name: "ReturnedOn",
                 table: "Orders");
         }
     }

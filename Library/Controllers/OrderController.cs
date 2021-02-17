@@ -6,11 +6,11 @@ using Library.Models;
 using Microsoft.EntityFrameworkCore;
 using Library.ViewModels;
 
+
 namespace Library.Controllers
 {
     public class OrderController : Controller
     {
-
         private readonly LibraryContext _context;
 
         public OrderController(LibraryContext context)
@@ -34,6 +34,7 @@ namespace Library.Controllers
             }
             return RedirectToAction("Shelves", "Book");
         }
+
         public async Task<ActionResult> Reservations()
         {
             var query = await _context.Books
@@ -66,50 +67,79 @@ namespace Library.Controllers
 
             return View(query);
         }
-
-
-        public  ActionResult Transactions()
+        
+        public async Task<ActionResult> Transactions()
         {
-            return View();
+            var orders = await _context.Orders
+                .Join(_context.Books,
+                    order => order.BookID,
+                    book => book.ID,
+                    (order, book) => new {
+                        order1 = order,
+                        book1=book,    
+                    }
+                )
+                .Join(_context.Users, res => res.order1.CustomerID, user => user.ID,
+                (res, user) => new OrderVm(res.order1,user.FullName,res.book1.Isbn,res.book1.Title,res.book1.Author)
+                )
+                .ToListAsync();
+
+            return View(orders);
         }
 
         public async  Task<ActionResult> AcceptReservation(int id)
-        {
-            var query = _context.Reservations.Where(e => e.ID == id);
-            await query
+        {  
+            var query = _context.Reservations.Where(r => r.ID == id);
+            var order = await query
                 .Join(_context.Users, res => res.CustomerID, user => user.ID,
                 (res, user) => new
                     {
                         ID = res.ID,
+                        bookID=res.BookID,
                         userID = res.CustomerID,
                         fullName = user.FullName,
-                        requestedAt = res.RequestedAt
                     }
                 )
-                .Join(_context.Books, res => res.ID, book => book.ID,
+                .Join(_context.Books, res => res.bookID, book => book.ID,
                 (res,book) => new Order(
-                
+                    res.ID,res.userID,res.bookID
                 )
                 ).ToListAsync();
 
-            var isSuccessful = await _context.SaveChangesAsync();
-            if (isSuccessful != 0)
-                TempData["reservationAcceptance"] = "reservation was successfully accepted.";
-            else
-                TempData["reservationAcceptance"] = "reservation acceptance failed.";
+
+            var reservation = await _context.Reservations.FindAsync(id);
+            var book = await _context.Books.FindAsync(reservation.BookID);
+            book.TimesBorrowed += 1;
+            book.Borrowed = true;
+
+            if (ModelState.IsValid)
+            {
+                _context.Books.Update(book);
+                _context.Orders.AddRange(order);
+                _context.Reservations.Remove(reservation);
+
+                var isSuccessful = await _context.SaveChangesAsync();
+                if (isSuccessful != 0)
+                    TempData["reservationAcceptance"] = "reservation was successfully accepted.";
+                else
+                    TempData["reservationAcceptance"] = "reservation acceptance failed.";
+                return RedirectToAction("Reservations", "Order");
+            }
             return RedirectToAction("Reservations", "Order");
         }
 
         public async Task<ActionResult> DeclineReservation(int id)
         {
             var reservation = await _context.Reservations.FindAsync(id);
+
             _context.Reservations.Remove(reservation);
-            var isSuccessful=await _context.SaveChangesAsync();
+            var isSuccessful = await _context.SaveChangesAsync();
             if (isSuccessful != 0)
                 TempData["reservationDeletion"] = "reservation was successfully deleted.";
             else
                 TempData["reservationDeletion"] = "reservation deletion failed.";
             return RedirectToAction("Reservations", "Order");
+
         }
     }
 }
