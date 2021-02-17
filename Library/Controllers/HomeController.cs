@@ -1,11 +1,10 @@
-﻿using Library.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-
-
-namespace Library.Controllers
+﻿namespace Library.Controllers
 {
+    using Library.Models;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using System.Diagnostics;
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

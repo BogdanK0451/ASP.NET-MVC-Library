@@ -1,16 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Library.Models;
-using Library.ViewModels;
-
-namespace Library.Controllers
+﻿namespace Library.Controllers
 {
+    using Library.Models;
+    using Library.ViewModels;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class BookController : Controller
     {
         private readonly LibraryContext _context;
+
+        public int BOOKS_HELD = 0;
 
         public BookController(LibraryContext context)
         {
@@ -38,8 +41,14 @@ namespace Library.Controllers
 
         public async Task<IActionResult> Shelves()
         {
-            BooksAndReservations booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync());
-            return View(booksandreservations); 
+            //passing the amount of books user borrowed, to the view
+            var currentUser = await _context.Users.FindAsync(HttpContext.Session.GetString("id"));
+            BooksAndReservations booksandreservations;
+            if (currentUser != null) 
+                booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), currentUser.BooksHeld );
+            else
+                booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), BOOKS_HELD);
+            return View(booksandreservations);
         }
 
         // GET: Book
@@ -79,7 +88,7 @@ namespace Library.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Isbn,Title,Author,Genre,YearWritten,Pages,Summary,Borrowed")] Book book)
-        {  //checks if there are any validation errors
+        {
             if (ModelState.IsValid)
             {
                 book.ImageUrl = "/images/" + book.Title + ".jpg";
@@ -173,6 +182,7 @@ namespace Library.Controllers
         {
             return _context.Books.Any(e => e.ID == id);
         }
+
         //GET: Book/Transactions
         public IActionResult Transactions()
         {

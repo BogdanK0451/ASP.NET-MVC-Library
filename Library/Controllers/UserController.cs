@@ -1,23 +1,25 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Library.Models;
-using Library.ViewModels;
-using System.Net.Mail;
-using System.Net;
-using System.Text;
-using Microsoft.AspNetCore.Http;
-using System;
-
-
-namespace Library.Controllers
+﻿namespace Library.Controllers
 {
+    using Library.Models;
+    using Library.ViewModels;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Mail;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public class UserController : Controller
     {
         const string SessionId = "id";
+
         const string SessionEmail = "email";
+
         const string SessionAccessLevel = "accessLevel";
+
         const string SessionName = "userName";
 
         const string LOGGED_OUT = "0";
@@ -28,11 +30,13 @@ namespace Library.Controllers
         {
             _context = context;
         }
+
         // GET: User
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
+
         // GET: User/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,6 +54,7 @@ namespace Library.Controllers
 
             return View(user);
         }
+
         // GET: User/Create  , add new user
         public IActionResult SignUp()
         {
@@ -81,11 +86,13 @@ namespace Library.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
         // GET: User/Sign_In
         public IActionResult SignIn()
         {
             return View();
         }
+
         // POST: User/Sign_In
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -95,11 +102,13 @@ namespace Library.Controllers
             var query = queryableResult.ToList();
 
             //if query result empty
-            if (!query.Any()) {
+            if (!query.Any())
+            {
                 TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
                 return RedirectToAction("Index", "Home");
             }
-            else {
+            else
+            {
 
                 foreach (var el in query)
                 {
@@ -208,6 +217,7 @@ namespace Library.Controllers
         {
             return _context.Users.Any(e => e.ID == id);
         }
+
         //GET: User/MyBooks
         public async Task<IActionResult> MyBooks()
         {
@@ -220,7 +230,7 @@ namespace Library.Controllers
                 ReturnBy = order.ReturnBy
 
             }).Join(_context.Books, bookVm => bookVm.bookID, book => book.ID,
-            (bookVm, book) => new BorrowedBookVm(book.Title,book.Author,bookVm.ReturnBy));
+            (bookVm, book) => new BorrowedBookVm(book.Title, book.Author, bookVm.ReturnBy));
 
             var bookBorrowedVm = await query2.ToListAsync();
             return View(bookBorrowedVm);

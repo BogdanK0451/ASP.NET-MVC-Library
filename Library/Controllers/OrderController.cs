@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Library.Models;
-using Microsoft.EntityFrameworkCore;
-using Library.ViewModels;
-
-
-namespace Library.Controllers
+﻿namespace Library.Controllers
 {
+    using Library.Models;
+    using Library.ViewModels;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class OrderController : Controller
     {
         private readonly LibraryContext _context;
@@ -18,9 +17,8 @@ namespace Library.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> CreateReservation([Bind("ID,BookID,UserID,RequestedAt")]Reservation reservation)
+        public async Task<IActionResult> CreateReservation([Bind("ID,BookID,UserID,RequestedAt")] Reservation reservation)
         {
-            // BooksAndReservations booksandreservations = new BooksAndReservations();
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);
@@ -37,7 +35,7 @@ namespace Library.Controllers
 
         public async Task<ActionResult> Reservations()
         {
-            var query =_context.Books
+            var query = _context.Books
                 .Join(_context.Reservations,
                     book => book.ID,
                     reservation => reservation.BookID,
@@ -66,7 +64,7 @@ namespace Library.Controllers
             var reservationsVm = await query.ToListAsync();
             return View(reservationsVm);
         }
-        
+
         public async Task<ActionResult> Transactions()
         {
             var query = _context.Orders
@@ -87,8 +85,8 @@ namespace Library.Controllers
             return View(orders);
         }
 
-        public async  Task<ActionResult> AcceptReservation(int id)
-        {  
+        public async Task<ActionResult> AcceptReservation(int id)
+        {
             var query = _context.Reservations.Where(r => r.ID == id);
             var query2 = query
                 .Join(_context.Users, res => res.UserID, user => user.ID,
@@ -125,7 +123,7 @@ namespace Library.Controllers
                 if (isSuccessful != 0)
                 {
                     TempData["reservationAcceptance"] = "reservation was successfully accepted.";
-                    BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID, reservation.BookID,order.ID);
+                    BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID, reservation.BookID, order.ID);
                     _context.BorrowedBooks.Add(borrowedBook);
                     await _context.SaveChangesAsync();
                 }
@@ -147,7 +145,6 @@ namespace Library.Controllers
             else
                 TempData["reservationDeletion"] = "reservation deletion failed.";
             return RedirectToAction("Reservations", "Order");
-
         }
     }
 }

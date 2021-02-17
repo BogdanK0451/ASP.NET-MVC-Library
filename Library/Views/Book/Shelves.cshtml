@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = "Bookshelf";
+    bool canReserve = true;
 }
 
 @{ int j = 0;}
@@ -24,6 +25,12 @@
     @if (TempData["reservationProcessed"] != null)
     {
         <p class="alert alert-info">@TempData["reservationProcessed"]</p>
+    }
+    @*disable reservation for users with >5 books*@
+    @if (Model.ReservedBooksByUser > 5)
+    {
+        <p class="alert alert-danger">You've borrowed too many books, you should return some before trying to reserve more</p>
+        canReserve = false;
     }
 </section>
 <div class="album py-5 bg-light">
@@ -52,7 +59,6 @@
             List<string> shownISBNs = new List<string>();
             Dictionary<string, int> unusedBooksCount = countHelper(Model.Books);
         }
-
         @foreach (var book in Model.Books)
         {
 
@@ -67,10 +73,9 @@
                     author = book.Author;
                 //incase YearWritten is null (this field in database is nullable) print N/A
                 @if (book.YearWritten.HasValue)
-                    yearWritten = "Year: " + book.YearWritten.Value.Year.ToString();
+                    yearWritten = book.YearWritten.Value.Year.ToString();
                 else
-                    yearWritten = "Year: N/A";
-                string titleAndAuthor = book.Title + " by " + author;
+                    yearWritten = "N/A";
                 @if (i % 3 == 0)
                 {
                     @Html.Raw("<div class=\"row row-eq-height\">")
@@ -91,11 +96,11 @@
                         }
 
                         <div class="card-body">
-                            <p class="card-text" style="height:50px; overflow:auto;">@titleAndAuthor</p>
+                            <p class="card-text" style="height:50px; overflow:auto;"><b>@(book.Title)</b> by <b>@(author)</b>, Genres: @(book.Genre)</p>
                             <div class="d-flex justify-content-between align-books-center">
                                 <div class="btn-group">
                                     @*grey out the button incase there's no books left*@
-                                    @{ if (unusedBooksCount[book.Isbn] > 0 && !String.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("id")) )
+                                    @{ if (unusedBooksCount[book.Isbn] > 0 && !String.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("id")) && canReserve)
                                         {
                                             <form class="form" asp-controller="Order" asp-action="CreateReservation">
                                                 <input type="Hidden" asp-for="Reservation.BookID" value="@book.ID" />
@@ -106,18 +111,19 @@
                                         }
                                         else
                                         {
-                                            {<button type="button" data-toggle="tooltip" data-placement="top" title="If the book is available, you have to log in" disabled class="btn btn-primary btn-outline-primary">Reserve</button>}
+                                            {<button type="button" data-toggle="tooltip" data-placement="top" title="Sorry, you can't reserve the book right now" disabled class="btn btn-primary btn-outline-primary">Reserve</button>}
                                         }
                                     }
                                     <button type="button" id="summary_@i" class="btn btn-sm btn-outline-primary summary">Summary</button>
                                 </div>
+
                                 <small class="text-muted font-weight-bold">
-                                    <span> Available: </span>
+                                    @*span should semantically be display inline generally, but this will be a quick fix*@
                                     @if (unusedBooksCount[book.Isbn] > 0)
-                                    {<span style="margin-right:10px; color:green">@available</span>}
-                                else
-                                {<span style="margin-right:10px; color:red">@available</span>}
-                                    <span>@yearWritten</span>
+                                    {<span style="color:green;display:block">Available: @(available)</span>}
+                                    else
+                                    {<span style="color:red;display:block">Available: @(available)</span>}
+                                    <span style="display:block">Year: @(yearWritten)</span>
                                 </small>
                             </div>
                         </div>

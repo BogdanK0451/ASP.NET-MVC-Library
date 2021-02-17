@@ -9,7 +9,6 @@
     <div class="row">
         <div class="col-xs-10">
             <div class="panel panel-primary">
-                <!-- Default panel contents -->
                 <div class="panel-heading">
                     <h2 class="panel-title">
                         List of all transactions
@@ -35,28 +34,29 @@
                     <tbody>
                         @foreach (var order in Model)
                         {
-                        <tr valign="top">
-                            <td>@order.Order.ID</td>
-                            <td>@order.FullName</td>
-                            <td>@order.Order.UserID</td>
-                            <td>@order.Order.BookID</td>
-                            <td>@order.BookISBN</td>
-                            <td>@order.BookName</td>
-                            <td>@order.BookAuthor</td>
-                            <td>@order.RequestedOn</td>
-                            <td>@order.Order.ReturnBy</td>
-                            <td>@order.Order.ReturnedOn</td>
-                            <td>@order.Order.Status</td>
-                            @if (order.Order.Status=="active") {
-                            <td>
-                                <form class="form" asp-controller="Book" asp-action="Returned">
-                                    <input type="Hidden" name="bookId" value="@order.Order.BookID" />
-                                    <input type="Hidden" name="orderId" value="@order.Order.ID" />
-                                    <input type="submit" value="Return" class="btn btn-primary btn-outline-primary" />
-                                </form>
-                            </td>
-                            }
-                        </tr>
+                            <tr valign="top">
+                                <td>@order.Order.ID</td>
+                                <td>@order.FullName</td>
+                                <td>@order.Order.UserID</td>
+                                <td>@order.Order.BookID</td>
+                                <td>@order.BookISBN</td>
+                                <td>@order.BookName</td>
+                                <td>@order.BookAuthor</td>
+                                <td>@order.RequestedOn</td>
+                                <td>@order.Order.ReturnBy</td>
+                                <td>@order.Order.ReturnedOn</td>
+                                <td>@order.Order.Status</td>
+                                @if (order.Order.Status == "active")
+                                {
+                                    <td>
+                                        <form class="form" asp-controller="Book" asp-action="Returned">
+                                            <input type="Hidden" name="bookId" value="@order.Order.BookID" />
+                                            <input type="Hidden" name="orderId" value="@order.Order.ID" />
+                                            <input type="submit" value="Return" class="btn btn-primary btn-outline-primary" />
+                                        </form>
+                                    </td>
+                                }
+                            </tr>
                         }
                     </tbody>
                 </table>

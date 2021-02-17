@@ -3,18 +3,19 @@
 @{
     ViewData["Title"] = "Reservations";
 }
+
+
 <div class="container">
     <div class="row">
         <div class="col-xs-10">
             <div class="panel panel-primary">
-                <!-- Default panel contents -->
                 <div class="panel-heading">
                     <h2 class="panel-title">
                         Reservations
                     </h2>
                     @if (TempData["reservationDeletion"] != null)
                     {
-                        <p class="alert alert-info" >@TempData["reservationDeletion"]</p>
+                        <p class="alert alert-info">@TempData["reservationDeletion"]</p>
                     }
                 </div>
 
@@ -36,28 +37,28 @@
                     <tbody>
                         @foreach (var res in Model)
                         {
-                        <tr>
-                            <td>@res.ID</td>
-                            <td>@res.FullName</td>
-                            <td>@res.UserID</td>
-                            <td>@res.BookID</td>
-                            <td>@res.BookISBN</td>
-                            <td>@res.BookName</td>
-                            <td>@res.BookAuthor</td>
-                            <td>@res.RequestedAt</td>
-                            <td>
-                                <form class="form" asp-controller="Order" asp-action="AcceptReservation">
-                                    <input type="Hidden" name="id" value="@res.ID" />
-                                    <input type="submit" value="Accept" class="btn btn-primary btn-outline-secondary" />
-                                </form>
-                            </td>
-                            <td>
-                                <form class="form" asp-controller="Order" asp-action="DeclineReservation">
-                                    <input type="Hidden" name="id" value="@res.ID" />
-                                    <input type="submit" value="Decline" class="btn btn-primary btn-outline-secondary" />
-                                </form>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>@res.ID</td>
+                                <td>@res.FullName</td>
+                                <td>@res.UserID</td>
+                                <td>@res.BookID</td>
+                                <td>@res.BookISBN</td>
+                                <td>@res.BookName</td>
+                                <td>@res.BookAuthor</td>
+                                <td>@res.RequestedAt</td>
+                                <td>
+                                    <form class="form" asp-controller="Order" asp-action="AcceptReservation">
+                                        <input type="Hidden" name="id" value="@res.ID" />
+                                        <input type="submit" value="Accept" class="btn btn-primary btn-outline-secondary" />
+                                    </form>
+                                </td>
+                                <td>
+                                    <form class="form" asp-controller="Order" asp-action="DeclineReservation">
+                                        <input type="Hidden" name="id" value="@res.ID" />
+                                        <input type="submit" value="Decline" class="btn btn-primary btn-outline-secondary" />
+                                    </form>
+                                </td>
+                            </tr>
                         }
                 </table>
             </div>
