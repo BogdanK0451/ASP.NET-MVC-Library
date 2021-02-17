@@ -19,12 +19,12 @@
         {
             _context = context;
         }
-
+        //POST:Book/Returned
         public async Task<IActionResult> Returned(int bookId, int orderId)
         {
             // need to chain await methods, have to fix
             var order = await _context.Orders.FindAsync(orderId);
-            var borrowedBook = await _context.BorrowedBooks.FindAsync(orderId);
+            var borrowedBook = await _context.BorrowedBooks.Where(b => b.OrderID == orderId).FirstAsync();
             var book = await _context.Books.FindAsync(bookId);
 
             order.ReturnedOn = DateTime.Now;
@@ -38,18 +38,29 @@
 
             return RedirectToAction("Transactions", "Order");
         }
-
+        // GET: Book/Shelves
         public async Task<IActionResult> Shelves()
         {
-            //passing the amount of books user borrowed, to the view
-            var currentUser = await _context.Users.FindAsync(HttpContext.Session.GetString("id"));
             BooksAndReservations booksandreservations;
-            if (currentUser != null) 
-                booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), currentUser.BooksHeld );
+            //passing the amount of books user borrowed, to the view
+            if (HttpContext.Session.GetString("id") != null)
+            {
+                var currentUser = await _context.Users.FindAsync(Int32.Parse(HttpContext.Session.GetString("id")));
+                booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), currentUser.BooksHeld);
+            }
             else
                 booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), BOOKS_HELD);
             return View(booksandreservations);
         }
+
+        // GET: Book/Popular
+        public IActionResult Popular()
+        {
+            var popularBooks = _context.Books.OrderByDescending(b => b.TimesBorrowed).Take(3);
+
+            return View();
+        }
+
 
         // GET: Book
         public async Task<IActionResult> Index()
@@ -183,10 +194,5 @@
             return _context.Books.Any(e => e.ID == id);
         }
 
-        //GET: Book/Transactions
-        public IActionResult Transactions()
-        {
-            return View();
-        }
     }
 }

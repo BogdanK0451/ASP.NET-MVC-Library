@@ -63,7 +63,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Sign_Up([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User user)
+        public async Task<IActionResult> SignUp([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User user)
         {
             //checking if email already exists in the database
             var queryableResult = _context.Users.Where(u => u.Email == user.Email);

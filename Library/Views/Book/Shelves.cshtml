@@ -27,7 +27,7 @@
         <p class="alert alert-info">@TempData["reservationProcessed"]</p>
     }
     @*disable reservation for users with >5 books*@
-    @if (Model.ReservedBooksByUser > 5)
+    @if (Model.ReservedBooksByUser >= 5)
     {
         <p class="alert alert-danger">You've borrowed too many books, you should return some before trying to reserve more</p>
         canReserve = false;

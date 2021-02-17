@@ -17,6 +17,10 @@
                     {
                         <p class="alert alert-info">@TempData["reservationDeletion"]</p>
                     }
+                    @if (TempData["noBookCopies"] != null)
+                    {
+                        <p class="alert alert-info">@TempData["noBookCopies"]</p>
+                    }
                 </div>
 
                 <table class="table table-hover" style="cursor:default">

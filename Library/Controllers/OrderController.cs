@@ -16,7 +16,7 @@
         {
             _context = context;
         }
-
+        //reservation should've been created based on bookISBN not bookID, bookISBN is unique
         public async Task<IActionResult> CreateReservation([Bind("ID,BookID,UserID,RequestedAt")] Reservation reservation)
         {
             if (ModelState.IsValid)
@@ -85,52 +85,70 @@
             return View(orders);
         }
 
+        //this gets complicated because of the wrong definition of the book table
         public async Task<ActionResult> AcceptReservation(int id)
         {
             var query = _context.Reservations.Where(r => r.ID == id);
-            var query2 = query
-                .Join(_context.Users, res => res.UserID, user => user.ID,
-                (res, user) => new
-                {
-                    ID = res.ID,
-                    bookID = res.BookID,
-                    userID = res.UserID,
-                    fullName = user.FullName,
-                }
-                )
-                .Join(_context.Books, res => res.bookID, book => book.ID,
-                (res, book) => new Order(
-                    res.ID, res.userID, res.bookID
-                ));
+            var reservation = await query.FirstAsync();
+            //finding the book with BookID from reservation
+            var query2 = _context.Books.Where(b => b.ID == reservation.BookID);
+            var book =  await query2.FirstAsync();
+            //finding all books with the same BookISBN as the book with given BookID
+            var query3 = _context.Books.Where(b => b.Isbn == book.Isbn && !b.Borrowed);
+            var orderableBook = await query3.FirstOrDefaultAsync();
 
-            var order = await query2.FirstAsync();
-            var reservation = await _context.Reservations.FindAsync(id);
-            var book = await _context.Books.FindAsync(reservation.BookID);
-            var user = await _context.Users.FindAsync(reservation.UserID);
-
-            user.TotalBooksBorrowed++;
-            book.TimesBorrowed++;
-            book.Borrowed = true;
-
-            // is there a need to check if model state is valid if i'm not creating an entry??
-            if (ModelState.IsValid)
+            if (!(orderableBook == null))
             {
-                _context.Books.Update(book);
-                _context.Orders.AddRange(order);
-                _context.Reservations.Remove(reservation);
+                reservation.BookID = orderableBook.ID;
+                 _context.Update(reservation);
+                 await _context.SaveChangesAsync();
 
-                var isSuccessful = await _context.SaveChangesAsync();
-                if (isSuccessful != 0)
+                var query4 = _context.Reservations.Where(r => r.ID == id);
+                var query5 = query4
+                    .Join(_context.Users, res => res.UserID, user => user.ID,
+                    (res, user) => new
+                    {
+                        ID = res.ID,
+                        bookID = res.BookID,
+                        userID = res.UserID,
+                        fullName = user.FullName,
+                    }
+                    )
+                    .Join(_context.Books, res => res.bookID, book => book.ID,
+                    (res, book) => new Order(
+                        res.ID, res.userID, res.bookID
+                    ));
+
+                var order = await query5.FirstAsync();
+                reservation = await _context.Reservations.FindAsync(id);
+                var user = await _context.Users.FindAsync(reservation.UserID);
+
+                user.TotalBooksBorrowed++;
+                orderableBook.TimesBorrowed++;
+                orderableBook.Borrowed = true;
+
+                // is there a need to check if model state is valid if i'm not creating an entry??
+                if (ModelState.IsValid)
                 {
-                    TempData["reservationAcceptance"] = "reservation was successfully accepted.";
-                    BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID, reservation.BookID, order.ID);
-                    _context.BorrowedBooks.Add(borrowedBook);
-                    await _context.SaveChangesAsync();
+                    _context.Users.Update(user);
+                    _context.Books.Update(orderableBook);
+                    _context.Orders.Add(order);
+                    _context.Reservations.Remove(reservation);
+
+                    var isSuccessful = await _context.SaveChangesAsync();
+                    if (isSuccessful != 0)
+                    {
+                        TempData["reservationAcceptance"] = "Reservation was successfully accepted.";
+                        BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID, reservation.BookID, order.ID);
+                        _context.BorrowedBooks.Add(borrowedBook);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                        TempData["reservationAcceptance"] = "Reservation acceptance failed.";
                 }
-                else
-                    TempData["reservationAcceptance"] = "reservation acceptance failed.";
-                return RedirectToAction("Reservations", "Order");
             }
+            else
+                TempData["noBookCopies"]="No book copies remaining, decline the reservation";
             return RedirectToAction("Reservations", "Order");
         }
 
@@ -141,9 +159,9 @@
             _context.Reservations.Remove(reservation);
             var isSuccessful = await _context.SaveChangesAsync();
             if (isSuccessful != 0)
-                TempData["reservationDeletion"] = "reservation was successfully deleted.";
+                TempData["reservationDeletion"] = "Reservation was successfully deleted.";
             else
-                TempData["reservationDeletion"] = "reservation deletion failed.";
+                TempData["reservationDeletion"] = "Reservation deletion failed.";
             return RedirectToAction("Reservations", "Order");
         }
     }

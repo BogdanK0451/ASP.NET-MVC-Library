@@ -32,9 +32,14 @@
 
                             @foreach (var book in Model)
                             {
+                                string author;
+                                @if (String.IsNullOrEmpty(book.Author))
+                                    author = "N/A";
+                                else
+                                    author = book.Author;
                                 <tr valign="top">
                                     <td>@book.Title</td>
-                                    <td>@book.Author</td>
+                                    <td>@author</td>
 
                                     @if (@book.ReturnBy.Subtract(DateTime.Now).Days < 3)
                                     {
