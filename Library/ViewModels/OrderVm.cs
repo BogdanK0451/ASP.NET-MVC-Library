@@ -5,12 +5,12 @@ namespace Library.ViewModels
 {
     public class OrderVm
     {
-        public Order Order;
-        public string FullName;
-        public string BookISBN;
-        public string BookName;
-        public string BookAuthor;
-        public DateTime RequestedOn;
+        public Order Order { get; set; }
+        public string FullName { get; set; }
+        public string BookISBN { get; set; }
+        public string BookName { get; set; }
+        public string BookAuthor { get; set; }
+        public DateTime RequestedOn { get; set; }
         
         public OrderVm(Order Order,string FullName, string BookISBN,string BookName,string BookAuthor)
         {

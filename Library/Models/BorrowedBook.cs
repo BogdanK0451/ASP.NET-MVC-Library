@@ -11,11 +11,14 @@ namespace Library.Models
         public int UserID { get; set; }
         [ForeignKey("Book")]
         public int BookID { get; set; }
+        [ForeignKey("Order")]
+        public int OrderID { get; set; }
 
-        public BorrowedBook(int UserID,int BookID)
+        public BorrowedBook(int UserID,int BookID,int OrderID)
         {
             this.UserID = UserID;
             this.BookID = BookID;
+            this.OrderID = OrderID;
         }
     }
 }

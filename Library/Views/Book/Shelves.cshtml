@@ -3,11 +3,9 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
-
 @{
     ViewData["Title"] = "Bookshelf";
 }
-
 
 @{ int j = 0;}
 @foreach (var book in Model.Books)
@@ -51,7 +49,7 @@
 
         @{
             int i = 0;
-            List<String> shownISBNs = new List<string>();
+            List<string> shownISBNs = new List<string>();
             Dictionary<string, int> unusedBooksCount = countHelper(Model.Books);
         }
 
@@ -78,8 +76,6 @@
                     @Html.Raw("<div class=\"row row-eq-height\">")
                 }
                 string available = unusedBooksCount[book.Isbn] > 0 ? "Yes" : "No";
-
-
 
                 <div class="col-md-4">
                     <div class="card shadow-sm">

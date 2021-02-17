@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Library.ViewModels.BorrowedBookVm>
+
+@{
+    ViewData["Title"] = "My Books";
+}
+
+
+<div class="container-md">
+    <div class="row">
+        <div class="col-xs-10">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title">
+                        My Books
+                    </h2>
+                </div>
+                @if (!Model.Any())
+                {
+                    <p>Sorry, you don't have any books, maybe you should order some!</p>
+                }
+                else
+                {
+                    <table class="table table-hover" style="cursor:default">
+                        <thead>
+                            <tr>
+                                <th>Book Name</th>
+                                <th>Book Author</th>
+                                <th>Return By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var book in Model)
+                            {
+                                <tr valign="top">
+                                    <td>@book.Title</td>
+                                    <td>@book.Author</td>
+
+                                    @if (@book.ReturnBy.Subtract(DateTime.Now).Days < 3)
+                                    {
+                                        <td style="background-color:indianred">@book.ReturnBy.ToString("dd/MM/yyyy")</td>
+                                    }
+                                    else if (@book.ReturnBy.Subtract(DateTime.Now).Days < 7)
+                                    {
+                                        <td style="background-color:orange">@book.ReturnBy.ToString("dd/MM/yyyy")e</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="background-color:lightgreen">@book.ReturnBy.ToString("dd/MM/yyyy")</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

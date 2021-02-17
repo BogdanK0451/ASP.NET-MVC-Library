@@ -37,7 +37,7 @@ namespace Library.Controllers
 
         public async Task<ActionResult> Reservations()
         {
-            var query = await _context.Books
+            var query =_context.Books
                 .Join(_context.Reservations,
                     book => book.ID,
                     reservation => reservation.BookID,
@@ -62,25 +62,27 @@ namespace Library.Controllers
                      res.requestedAt,
                      res.userID,
                      user.FullName
-                )).ToListAsync();
-            return View(query);
+                ));
+            var reservationsVm = await query.ToListAsync();
+            return View(reservationsVm);
         }
         
         public async Task<ActionResult> Transactions()
         {
-            var orders = await _context.Orders
+            var query = _context.Orders
                 .Join(_context.Books,
                     order => order.BookID,
                     book => book.ID,
-                    (order, book) => new {
+                    (order, book) => new
+                    {
                         order1 = order,
-                        book1=book,    
+                        book1 = book,
                     }
                 )
                 .Join(_context.Users, res => res.order1.UserID, user => user.ID,
-                (res, user) => new OrderVm(res.order1,user.FullName,res.book1.Isbn,res.book1.Title,res.book1.Author)
-                )
-                .ToListAsync();
+                (res, user) => new OrderVm(res.order1, user.FullName, res.book1.Isbn, res.book1.Title, res.book1.Author)
+                );
+            var orders = await query.ToListAsync();
 
             return View(orders);
         }
@@ -88,41 +90,45 @@ namespace Library.Controllers
         public async  Task<ActionResult> AcceptReservation(int id)
         {  
             var query = _context.Reservations.Where(r => r.ID == id);
-            var order = await query
+            var query2 = query
                 .Join(_context.Users, res => res.UserID, user => user.ID,
                 (res, user) => new
-                    {
-                        ID = res.ID,
-                        bookID=res.BookID,
-                        userID = res.UserID,
-                        fullName = user.FullName,
-                    }
+                {
+                    ID = res.ID,
+                    bookID = res.BookID,
+                    userID = res.UserID,
+                    fullName = user.FullName,
+                }
                 )
                 .Join(_context.Books, res => res.bookID, book => book.ID,
-                (res,book) => new Order(
-                    res.ID,res.userID,res.bookID
-                )
-                ).ToListAsync();
+                (res, book) => new Order(
+                    res.ID, res.userID, res.bookID
+                ));
 
-
+            var order = await query2.FirstAsync();
             var reservation = await _context.Reservations.FindAsync(id);
             var book = await _context.Books.FindAsync(reservation.BookID);
-            BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID,reservation.BookID);
+            var user = await _context.Users.FindAsync(reservation.UserID);
 
-            book.TimesBorrowed += 1;
+            user.TotalBooksBorrowed++;
+            book.TimesBorrowed++;
             book.Borrowed = true;
 
             // is there a need to check if model state is valid if i'm not creating an entry??
             if (ModelState.IsValid)
             {
-                _context.BorrowedBooks.Add(borrowedBook);
                 _context.Books.Update(book);
                 _context.Orders.AddRange(order);
                 _context.Reservations.Remove(reservation);
 
                 var isSuccessful = await _context.SaveChangesAsync();
                 if (isSuccessful != 0)
+                {
                     TempData["reservationAcceptance"] = "reservation was successfully accepted.";
+                    BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID, reservation.BookID,order.ID);
+                    _context.BorrowedBooks.Add(borrowedBook);
+                    await _context.SaveChangesAsync();
+                }
                 else
                     TempData["reservationAcceptance"] = "reservation acceptance failed.";
                 return RedirectToAction("Reservations", "Order");

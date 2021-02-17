@@ -19,7 +19,9 @@ namespace Library.Controllers
 
         public async Task<IActionResult> Returned(int bookId, int orderId)
         {
+            // need to chain await methods, have to fix
             var order = await _context.Orders.FindAsync(orderId);
+            var borrowedBook = await _context.BorrowedBooks.FindAsync(orderId);
             var book = await _context.Books.FindAsync(bookId);
 
             order.ReturnedOn = DateTime.Now;
@@ -28,6 +30,7 @@ namespace Library.Controllers
 
             _context.Update(order);
             _context.Update(book);
+            _context.Remove(borrowedBook);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Transactions", "Order");
@@ -66,9 +69,9 @@ namespace Library.Controllers
         // GET: Book/Create
         public IActionResult Create()
         {
-            BooksAndGenres booksandgenres= new BooksAndGenres();
-            booksandgenres.Genres = _context.Genres.ToList();
-            ViewData["booksandgenres"] = booksandgenres;
+            //BooksAndGenres booksandgenres= new BooksAndGenres();
+            //booksandgenres.Genres = _context.Genres.ToList();
+            //ViewData["booksandgenres"] = booksandgenres;
             return View();
         }
 

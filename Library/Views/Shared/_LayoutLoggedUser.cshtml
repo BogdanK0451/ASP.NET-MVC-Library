@@ -29,7 +29,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Shelves">Bookshelves</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="My_Books">My Books</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyBooks">My Books</a>
                         </li>
                         <li class="nav-item" style="cursor: default; position: absolute; right: 75px">
                             <p class="nav-link"><b>@HttpContextAccessor.HttpContext.Session.GetString("userName")</b></p>

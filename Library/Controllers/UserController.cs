@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Library.Models;
+using Library.ViewModels;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Http;
-
+using System;
 
 
 namespace Library.Controllers
@@ -50,7 +51,7 @@ namespace Library.Controllers
             return View(user);
         }
         // GET: User/Create  , add new user
-        public IActionResult Sign_Up()
+        public IActionResult SignUp()
         {
             return View();
         }
@@ -81,16 +82,15 @@ namespace Library.Controllers
             }
         }
         // GET: User/Sign_In
-        public IActionResult Sign_In()
+        public IActionResult SignIn()
         {
             return View();
         }
         // POST: User/Sign_In
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Sign_In(string email, string password)
+        public ActionResult SignIn(string email, string password)
         {
-   
             var queryableResult = _context.Users.Where(u => u.Email == email && u.Password == password);
             var query = queryableResult.ToList();
 
@@ -113,8 +113,10 @@ namespace Library.Controllers
             }
         }
 
-
         // GET: Index page
+        /*Severity	Code	Description	Project	File	Line	Suppression State
+        Warning	CS0114	'UserController.SignOut()' hides inherited member 'ControllerBase.SignOut()'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.	Library	F:\Bigger things\Library\Library\Library\Controllers\UserController.cs	114	Active
+        */
         public IActionResult Sign_Out()
         {
             HttpContext.Session.Remove(SessionId);
@@ -139,7 +141,6 @@ namespace Library.Controllers
             }
             return View(user);
         }
-
 
         // POST: User/Edit/5
         [HttpPost]
@@ -206,6 +207,23 @@ namespace Library.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.ID == id);
+        }
+        //GET: User/MyBooks
+        public async Task<IActionResult> MyBooks()
+        {
+            var userID = Int32.Parse(HttpContext.Session.GetString("id"));
+            var query = _context.BorrowedBooks.Where(borrowedBook => borrowedBook.UserID == userID);
+            var query2 = query.Join(_context.Orders, bookVm => bookVm.OrderID, order => order.ID,
+            (bookVm, order) => new
+            {
+                bookID = bookVm.BookID,
+                ReturnBy = order.ReturnBy
+
+            }).Join(_context.Books, bookVm => bookVm.bookID, book => book.ID,
+            (bookVm, book) => new BorrowedBookVm(book.Title,book.Author,bookVm.ReturnBy));
+
+            var bookBorrowedVm = await query2.ToListAsync();
+            return View(bookBorrowedVm);
         }
 
         public void SendEmail(string toEmail, string subject, string emailBody)
