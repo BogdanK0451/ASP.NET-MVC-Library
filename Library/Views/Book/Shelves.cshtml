@@ -103,7 +103,7 @@
                                         {
                                             <form class="form" asp-controller="Order" asp-action="CreateReservation">
                                                 <input type="Hidden" asp-for="Reservation.BookID" value="@book.ID" />
-                                                <input type="Hidden" asp-for="Reservation.CustomerID" value="@HttpContextAccessor.HttpContext.Session.GetString("id")" />
+                                                <input type="Hidden" asp-for="Reservation.UserID" value="@HttpContextAccessor.HttpContext.Session.GetString("id")" />
                                                 <input type="Hidden" class="dateTime" asp-for="Reservation.RequestedAt" />
                                                 <input type="submit" value="Reserve" class="btn btn-primary btn-outline-secondary" />
                                             </form>

@@ -17,21 +17,21 @@ namespace Library.Controllers
             _context = context;
         }
 
-        //public async Task<IActionResult> Returned(int bookId,int orderId)
-        //{
-        //    var order = await _context.Orders.FindAsync(orderId);
-        //    var book = await _context.Books.FindAsync(bookId);
+        public async Task<IActionResult> Returned(int bookId, int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            var book = await _context.Books.FindAsync(bookId);
 
-        //    order.ReturnedOn = DateTime.Now;
-        //    order.Status = "completed";
-        //    book.Borrowed = false;
+            order.ReturnedOn = DateTime.Now;
+            order.Status = "completed";
+            book.Borrowed = false;
 
-        //    _context.Update(order);
-        //    _context.Remove(book);
-        //    await _context.SaveChangesAsync();
+            _context.Update(order);
+            _context.Update(book);
+            await _context.SaveChangesAsync();
 
-        //    return RedirectToAction("Transactions", "Order");
-        //}
+            return RedirectToAction("Transactions", "Order");
+        }
 
         public async Task<IActionResult> Shelves()
         {

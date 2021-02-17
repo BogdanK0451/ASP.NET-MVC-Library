@@ -8,8 +8,14 @@ namespace Library.Models
         [Key]
         public int ID { get; set; }
         [ForeignKey("User")]
-        public int CustomerID { get; set; }
+        public int UserID { get; set; }
         [ForeignKey("Book")]
         public int BookID { get; set; }
+
+        public BorrowedBook(int UserID,int BookID)
+        {
+            this.UserID = UserID;
+            this.BookID = BookID;
+        }
     }
 }

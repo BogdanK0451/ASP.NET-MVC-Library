@@ -18,7 +18,7 @@ namespace Library.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> CreateReservation([Bind("ID,BookID,CustomerID,RequestedAt")]Reservation reservation)
+        public async Task<IActionResult> CreateReservation([Bind("ID,BookID,UserID,RequestedAt")]Reservation reservation)
         {
             // BooksAndReservations booksandreservations = new BooksAndReservations();
             if (ModelState.IsValid)
@@ -49,10 +49,10 @@ namespace Library.Controllers
                         bookName = book.Title,
                         bookAuthor = book.Author,
                         requestedAt = reservation.RequestedAt,
-                        customerID = reservation.CustomerID
+                        userID = reservation.UserID
                     }
                 )
-                .Join(_context.Users, res => res.customerID, user => user.ID,
+                .Join(_context.Users, res => res.userID, user => user.ID,
                 (res, user) => new ReservationsVm(
                      res.ID,
                      res.bookID,
@@ -60,11 +60,9 @@ namespace Library.Controllers
                      res.bookName,
                      res.bookAuthor,
                      res.requestedAt,
-                     res.customerID,
+                     res.userID,
                      user.FullName
                 )).ToListAsync();
-            // why not async+await if we have to wait for database call, and don't want the app to block
-
             return View(query);
         }
         
@@ -79,7 +77,7 @@ namespace Library.Controllers
                         book1=book,    
                     }
                 )
-                .Join(_context.Users, res => res.order1.CustomerID, user => user.ID,
+                .Join(_context.Users, res => res.order1.UserID, user => user.ID,
                 (res, user) => new OrderVm(res.order1,user.FullName,res.book1.Isbn,res.book1.Title,res.book1.Author)
                 )
                 .ToListAsync();
@@ -91,12 +89,12 @@ namespace Library.Controllers
         {  
             var query = _context.Reservations.Where(r => r.ID == id);
             var order = await query
-                .Join(_context.Users, res => res.CustomerID, user => user.ID,
+                .Join(_context.Users, res => res.UserID, user => user.ID,
                 (res, user) => new
                     {
                         ID = res.ID,
                         bookID=res.BookID,
-                        userID = res.CustomerID,
+                        userID = res.UserID,
                         fullName = user.FullName,
                     }
                 )
@@ -109,11 +107,15 @@ namespace Library.Controllers
 
             var reservation = await _context.Reservations.FindAsync(id);
             var book = await _context.Books.FindAsync(reservation.BookID);
+            BorrowedBook borrowedBook = new BorrowedBook(reservation.UserID,reservation.BookID);
+
             book.TimesBorrowed += 1;
             book.Borrowed = true;
 
+            // is there a need to check if model state is valid if i'm not creating an entry??
             if (ModelState.IsValid)
             {
+                _context.BorrowedBooks.Add(borrowedBook);
                 _context.Books.Update(book);
                 _context.Orders.AddRange(order);
                 _context.Reservations.Remove(reservation);

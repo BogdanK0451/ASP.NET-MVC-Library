@@ -15,17 +15,17 @@ namespace Library.Models
         [ForeignKey("Reservation")]
         public int ReservationID { get; set; }
         [ForeignKey("User")]
-        public int CustomerID { get; set; }
+        public int UserID { get; set; }
         [ForeignKey("Book")]
         public int BookID { get; set; }
         public DateTime ReturnBy { get; set; }
         public DateTime? ReturnedOn { get; set; } = null;
         public string Status { get; set; } = "active";
         
-        public Order(int ReservationID, int CustomerID, int BookID)
+        public Order(int ReservationID, int UserID, int BookID)
         {
             this.ReservationID = ReservationID;
-            this.CustomerID = CustomerID;
+            this.UserID = UserID;
             this.BookID = BookID;
             this.ReturnBy = DateTime.Now + new TimeSpan(14, 0, 0, 0);
             
@@ -33,7 +33,7 @@ namespace Library.Models
         public Order(Order Order)
         {
             this.ReservationID = Order.ReservationID;
-            this.CustomerID = Order.CustomerID;
+            this.UserID = Order.UserID;
             this.BookID = Order.BookID;
             this.ReturnBy = Order.ReturnBy;
         }

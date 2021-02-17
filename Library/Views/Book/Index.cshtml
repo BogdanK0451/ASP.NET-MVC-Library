@@ -12,6 +12,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>@Html.DisplayNameFor(model => model.ID)</th>
             <th>
                 @Html.DisplayNameFor(model => model.Isbn)
             </th>
@@ -41,16 +42,19 @@
         @foreach (var item in Model)
         {
             string summary;
-            @if(String.IsNullOrEmpty(item.Summary))
+            @if (String.IsNullOrEmpty(item.Summary))
             {
                 summary = "N/A";
             }
             else
             {
-               // System.Diagnostics.Debug.WriteLine(item.Summary);
-                summary = item.Summary.Substring(0,100)+"...";
+                // System.Diagnostics.Debug.WriteLine(item.Summary);
+                summary = item.Summary.Substring(0, 100) + "...";
             }
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Isbn)
                 </td>
