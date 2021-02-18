@@ -48,7 +48,6 @@
             }
             else
             {
-                // System.Diagnostics.Debug.WriteLine(item.Summary);
                 summary = item.Summary.Substring(0, 100) + "...";
             }
             <tr>
@@ -69,8 +68,6 @@
                 </td>
                 <td>
                     @{ string yearWritten;
-
-                        //incase YearWritten is null (this field in database is nullable) print N/A
                         if (item.YearWritten.HasValue)
                             yearWritten = item.YearWritten.Value.Year.ToString();
                         else

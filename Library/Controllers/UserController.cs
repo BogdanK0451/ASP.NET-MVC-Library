@@ -15,13 +15,9 @@
     public class UserController : Controller
     {
         const string SessionId = "id";
-
         const string SessionEmail = "email";
-
         const string SessionAccessLevel = "accessLevel";
-
         const string SessionName = "userName";
-
         const string LOGGED_OUT = "0";
 
         private readonly LibraryContext _context;
@@ -55,7 +51,7 @@
             return View(user);
         }
 
-        // GET: User/Create  , add new user
+        // GET: User/Create
         public IActionResult SignUp()
         {
             return View();
@@ -71,7 +67,6 @@
             if (ModelState.IsValid && !query.Any())
             {
 
-                // authentication issues
                 //SendEmail(user.Email, "Your Library Account", "Congratulations!\n Your account has been Successfully created!");
 
                 //success, hence, show the user that he succesfully created an account
@@ -101,7 +96,6 @@
             var queryableResult = _context.Users.Where(u => u.Email == email && u.Password == password);
             var query = queryableResult.ToList();
 
-            //if query result empty
             if (!query.Any())
             {
                 TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
@@ -124,8 +118,10 @@
 
         // GET: Index page
         /*Severity	Code	Description	Project	File	Line	Suppression State
-        Warning	CS0114	'UserController.SignOut()' hides inherited member 'ControllerBase.SignOut()'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.	Library	F:\Bigger things\Library\Library\Library\Controllers\UserController.cs	114	Active
-        */
+        Warning	CS0114	'UserController.SignOut()' hides inherited member 'ControllerBase.SignOut()'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.	Library	F:\Library\Controllers\UserController.cs	114	Active
+         */
+
+        //renamed instead of overriding
         public IActionResult Sign_Out()
         {
             HttpContext.Session.Remove(SessionId);
@@ -221,6 +217,8 @@
         //GET: User/MyBooks
         public async Task<IActionResult> MyBooks()
         {
+
+            //generating viewmodel for MyBooks view
             var userID = Int32.Parse(HttpContext.Session.GetString("id"));
             var query = _context.BorrowedBooks.Where(borrowedBook => borrowedBook.UserID == userID);
             var query2 = query.Join(_context.Orders, bookVm => bookVm.OrderID, order => order.ID,
@@ -238,6 +236,7 @@
 
         public void SendEmail(string toEmail, string subject, string emailBody)
         {
+            /* Doesn't work yet */
             string senderEmail = "projectsendemail@gmail.com";
             string senderPassword = "emailsender123";
             SmtpClient client = new SmtpClient("smtp.gmail.com", 587);

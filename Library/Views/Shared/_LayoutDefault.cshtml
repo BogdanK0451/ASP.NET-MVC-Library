@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@*Layout for user that's not logged in (lowest permissions level)*@
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -47,10 +49,12 @@
             &copy; 2021 - Library - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    @*where do i need to put these script tags so that these libraries are available accross the whole web app?
+        (assuming all js code gets "compiled" into 1 big file when it gets sent to the user*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/notify/notify.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

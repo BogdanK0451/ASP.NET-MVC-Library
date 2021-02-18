@@ -10,6 +10,8 @@ namespace Library.Models
 {
     public class Order
     {
+
+        // probably Orders and Reservations could've been 1 schema logically
         [Key]
         public int ID { get; set; }
         [ForeignKey("Reservation")]

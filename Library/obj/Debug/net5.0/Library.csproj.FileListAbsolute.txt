@@ -467,3 +467,4 @@ F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\Order\Tran
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\MyBooks.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\SignIn.cshtml.g.cs
 F:\Bigger things\Library\Library\Library\obj\Debug\net5.0\Razor\Views\User\SignUp.cshtml.g.cs
+F:\Bigger things\Library\Library\Library\bin\Debug\net5.0\libman.json

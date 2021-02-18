@@ -16,7 +16,7 @@
         {
             _context = context;
         }
-        //reservation should've been created based on bookISBN not bookID, bookISBN is unique
+        /*reservation should've been created based on bookISBN not bookID, bookISBN is unique, but we'll refactor the database and code at a later point*/
         public async Task<IActionResult> CreateReservation([Bind("ID,BookID,UserID,RequestedAt")] Reservation reservation)
         {
             if (ModelState.IsValid)
@@ -85,9 +85,12 @@
             return View(orders);
         }
 
-        //this gets complicated because of the wrong definition of the book table
+        //this gets complicated because the way the Book schema was defined
+        /* Problem happens because the reservation gets bound to the ID of the Book. 
+         * And because of the way the code is structured if 1 copy of a specific Book is reserved, other copies won't be able to be reserved.
+         Because of that bad implementation we have to query for the book with the specified ID and then query for all books of the same ISBN as that book*/
         public async Task<ActionResult> AcceptReservation(int id)
-        {
+        {   // find the reservation we want to accept
             var query = _context.Reservations.Where(r => r.ID == id);
             var reservation = await query.FirstAsync();
             //finding the book with BookID from reservation
@@ -96,7 +99,7 @@
             //finding all books with the same BookISBN as the book with given BookID
             var query3 = _context.Books.Where(b => b.Isbn == book.Isbn && !b.Borrowed);
             var orderableBook = await query3.FirstOrDefaultAsync();
-
+            // if copy of the book that isn't in use exists
             if (!(orderableBook == null))
             {
                 reservation.BookID = orderableBook.ID;

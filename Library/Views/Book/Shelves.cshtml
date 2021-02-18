@@ -45,7 +45,7 @@
                     {
                         unusedBooksCount.Add(book.Isbn, 0);
                         if (book.Borrowed == false)
-                        {
+                        { // could break this loop upon finding 1 unusedBook instead of going through the whole array
                             unusedBooksCount[book.Isbn] += 1;
                         }
                     }
@@ -167,7 +167,7 @@
             form.addEventListener("submit", getCurrentDateTime)
         })
 
-
+        // using this function to generate time at which the client is creating the reservation
         function getCurrentDateTime(e) {
             e.preventDefault();
             let dateTimeInput = e.target.querySelector(".dateTime");

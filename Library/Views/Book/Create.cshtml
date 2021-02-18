@@ -29,6 +29,7 @@
             <div class="form-group">
                 <label asp-for="Genre" style="display:block" class="control-label"></label>
                 <select asp-for="Genre" id="select_multiple" multiple class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    @*could fetch this option list from Genre table but haven't implemented it yet *@
                     <option selected value="Crime">Crime</option>
                     <option value="Drama">Drama</option>
                     <option value="Action">Action</option>
@@ -50,6 +51,9 @@
                 <span asp-validation-for="Genre" class="text-danger"></span>
             </div>
             <div class="form-group">
+                @*since we're only interested in the release year, the input could be visually adjusted
+                    to not show months/time but for the sake of time we'll leave it as is
+                *@
                 <label asp-for="YearWritten" class="control-label">Year Written</label>
                 <input asp-for="YearWritten" class="form-control" />
                 <span asp-validation-for="YearWritten" class="text-danger"></span>
@@ -76,22 +80,28 @@
 </div>
 
 @section Scripts {
-    @*<script type="text/javascript">
+    <script type="text/javascript">
 
 
-        // broken multiselect
-        let form = document.getElementById("createbook");
-        form.addEventListener("submit", checkSelected);
+                ////const connection = new signalR.HubConnectionBuilder()
+                ////    .withUrl("/Book/Create")
+                ////    .configureLogging(signalR.LogLevel.Information)
+                ////    .build();
 
-        function checkSelected(e) {
-            e.preventDefault();
-            let selectTag = document.getElementById("select_multiple");
-            const selected = document.querySelectorAll('#select_multiple option:checked');
-            const values = Array.from(selected).map(el => el.value);
-            console.log(values);
-            selectTag.value = values.toString();
-        }
-    </script>*@
-    
+                //async function start() {
+                //    try {
+                //        await connection.start();
+                //        console.log("SignalR Connected.");
+                //    } catch (err) {
+                //        console.log(err);
+                //        setTimeout(start, 5000);
+                //    }
+                //};
+
+                //connection.onclose(start);
+                //start();
+
+
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

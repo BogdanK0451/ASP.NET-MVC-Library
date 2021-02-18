@@ -10,6 +10,9 @@ namespace Library.Models
     {
         [Key]
         public int ID { get; set; }
+        /*key "mistake" in the design of the web app, ISBN should've been the KEY in the book schema
+         and each book copy should've been stored in another table related to this one
+         */
         [Required]
         [StringLength(13,MinimumLength =13)]
         public string Isbn { get; set; }

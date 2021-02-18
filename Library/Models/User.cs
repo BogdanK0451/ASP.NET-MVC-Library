@@ -30,7 +30,7 @@ namespace Library.Models
         [NotMapped]
         [Required]
         [Display(Name = "Confirm Password")]
-        [System.ComponentModel.DataAnnotations.Compare("Password")]
+        [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
         public int PermissionLevel { get; set; } = 1;

@@ -1,15 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Library.Models;
+using SignalRLibrary.Hubs;
 
 namespace Library
 {
@@ -28,12 +25,13 @@ namespace Library
 
             // "recompiles" the webpage on view change + F5
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddSignalR();
 
 
             services.AddDbContext<LibraryContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LibraryContext")));
 
-
+            //using sessions to store data about the logged in user
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
             });
@@ -62,13 +60,13 @@ namespace Library
 
             app.UseAuthorization();
 
-            // Routers
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            }  
+            );
         }
     }
 }

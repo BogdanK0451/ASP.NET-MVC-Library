@@ -5,6 +5,7 @@ namespace Library.Models
 {
     public class BorrowedBook
     {
+        //stores books that a user has in his posession at the moment, used for MyBooks view
         [Key]
         public int ID { get; set; }
         [ForeignKey("User")]
