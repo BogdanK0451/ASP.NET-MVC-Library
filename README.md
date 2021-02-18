@@ -14,7 +14,7 @@ Admin can list all orders under /Order/Transactions and he can confirm that a bo
 
 
 ### To Fix/Refactor
-Proper usage of async/await (chaining asynchronous evenets)\
+Correct usage of asynchronous code (async/await/Task statements), and specifically chaining asynchronous events)\
 Redesign the database schemas to make more logical sense\
 Make code adhere stylistically to C# conventions\
 Rename variables to make more logical sense
