@@ -26,7 +26,9 @@
             var order = await _context.Orders.FindAsync(orderId);
             var borrowedBook = await _context.BorrowedBooks.Where(b => b.OrderID == orderId).FirstAsync();
             var book = await _context.Books.FindAsync(bookId);
+            var user = await _context.Users.FindAsync(order.UserID);
 
+            user.BooksHeld--;
             order.ReturnedOn = DateTime.Now;
             order.Status = "completed";
             book.Borrowed = false;
@@ -34,6 +36,7 @@
             // this just "tells the database what needs to be done but doesn't do anythign"
             _context.Update(order);
             _context.Update(book);
+            _context.Update(user);
             _context.Remove(borrowedBook);
 
             //this does the trick
@@ -45,16 +48,15 @@
         // GET: Book/Shelves
         public async Task<IActionResult> Shelves()
         {
-            BooksAndReservations booksandreservations;
-            //passing the amount of books user borrowed, to the view, for limiting the amount of books user can borrow
             if (HttpContext.Session.GetString("id") != null)
             {
-                var currentUser = await _context.Users.FindAsync(Int32.Parse(HttpContext.Session.GetString("id")));
-                booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), currentUser.BooksHeld);
+                // is it fine using tempdata in the views?
+                var user = await _context.Users.Where(u => u.ID == Int32.Parse(HttpContext.Session.GetString("id"))).SingleAsync();
+                TempData["booksHeld"] = user.BooksHeld;
             }
             else
-                booksandreservations = new BooksAndReservations(await _context.Books.ToListAsync(), BOOKS_HELD);
-            return View(booksandreservations);
+                TempData["booksHeld"] = BOOKS_HELD;
+            return View(await _context.Books.ToListAsync());
         }
 
         // GET: Book/Popular

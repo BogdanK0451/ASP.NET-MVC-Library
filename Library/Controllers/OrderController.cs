@@ -91,14 +91,14 @@
          Because of that bad implementation we have to query for the book with the specified ID and then query for all books of the same ISBN as that book*/
         public async Task<ActionResult> AcceptReservation(int id)
         {   // find the reservation we want to accept
-            var query = _context.Reservations.Where(r => r.ID == id);
-            var reservation = await query.FirstAsync();
+            var queryableReservations = _context.Reservations.Where(r => r.ID == id);
+            var reservation = await queryableReservations.FirstAsync();
             //finding the book with BookID from reservation
-            var query2 = _context.Books.Where(b => b.ID == reservation.BookID);
-            var book =  await query2.FirstAsync();
+            var queryableBooks = _context.Books.Where(b => b.ID == reservation.BookID);
+            var book =  await queryableBooks.FirstAsync();
             //finding all books with the same BookISBN as the book with given BookID
-            var query3 = _context.Books.Where(b => b.Isbn == book.Isbn && !b.Borrowed);
-            var orderableBook = await query3.FirstOrDefaultAsync();
+            var queryableBooks2 = _context.Books.Where(b => b.Isbn == book.Isbn && !b.Borrowed);
+            var orderableBook = await queryableBooks2.FirstOrDefaultAsync();
             // if copy of the book that isn't in use exists
             if (!(orderableBook == null))
             {
@@ -126,6 +126,7 @@
                 reservation = await _context.Reservations.FindAsync(id);
                 var user = await _context.Users.FindAsync(reservation.UserID);
 
+                user.BooksHeld++;
                 user.TotalBooksBorrowed++;
                 orderableBook.TimesBorrowed++;
                 orderableBook.Borrowed = true;

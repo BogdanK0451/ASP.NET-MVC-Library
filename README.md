@@ -14,15 +14,14 @@ Admin can list all orders under /Order/Transactions and he can confirm that a bo
 
 
 ### To Fix/Refactor
-Correct usage of asynchronous code (async/await/Task statements), and specifically chaining asynchronous events)\
 Redesign the database schemas to make more logical sense\
-Make code adhere stylistically to C# conventions\
 Rename variables to make more logical sense
 
 ### Missing "core" features
 SignalR real-time page updates
 
 ### Missing random features in a random order
+Book deletion without affecting orders table
 Proper error handling\
 Sorting all the content by any columns\
 Popular page\

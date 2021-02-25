@@ -1,4 +1,4 @@
-﻿@model Library.ViewModels.BooksAndReservations
+﻿@model IEnumerable<Library.Models.Book>
 @using System.IO
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
@@ -11,7 +11,7 @@
 @{ int j = 0;}
 
 @*modals with summary that get loaded in for all books before user opens any of them, not sure if this is the right approach*@
-@foreach (var book in Model.Books)
+@foreach (var book in Model)
 {
     <div id="modal_@j" class="modal">
         <div class="modal-content">
@@ -28,8 +28,11 @@
     {
         <p class="alert alert-info">@TempData["reservationProcessed"]</p>
     }
-    @*disable reservation for users with >5 books*@
-    @if (Model.ReservedBooksByUser >= 5)
+    @*disable reservation for users with >5 books
+        gives an error unless we call .ToString??
+    *@
+
+    @if (Int32.Parse(TempData["booksHeld"].ToString()) >= 5)
     {
         <p class="alert alert-danger">You've borrowed too many books, you should return some before trying to reserve more</p>
         canReserve = false;
@@ -51,6 +54,9 @@
                             unusedBooksCount[book.Isbn] += 1;
                         }
                     }
+                    else
+                        if (book.Borrowed == false)
+                        unusedBooksCount[book.Isbn] += 1;
                 }
                 return unusedBooksCount;
             }
@@ -59,9 +65,9 @@
         @{
             int i = 0;
             List<string> shownISBNs = new List<string>();
-            Dictionary<string, int> unusedBooksCount = countHelper(Model.Books);
+            Dictionary<string, int> unusedBooksCount = countHelper(Model);
         }
-        @foreach (var book in Model.Books)
+        @foreach (var book in Model)
         {
 
             //check if book was already shown
@@ -105,9 +111,9 @@
                                     @{ if (unusedBooksCount[book.Isbn] > 0 && !String.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("id")) && canReserve)
                                         {
                                             <form class="form" asp-controller="Order" asp-action="CreateReservation">
-                                                <input type="Hidden" asp-for="Reservation.BookID" value="@book.ID" />
-                                                <input type="Hidden" asp-for="Reservation.UserID" value="@HttpContextAccessor.HttpContext.Session.GetString("id")" />
-                                                <input type="Hidden" class="dateTime" asp-for="Reservation.RequestedAt" />
+                                                <input type="Hidden" name="BookID" value="@book.ID" />
+                                                <input type="Hidden" name="UserID" value="@HttpContextAccessor.HttpContext.Session.GetString("id")" />
+                                                <input type="Hidden" class="dateTime" name="RequestedAt" />
                                                 <input type="submit" value="Reserve" class="btn btn-primary btn-outline-secondary" />
                                             </form>
                                         }

@@ -59,18 +59,18 @@
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignUp([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User User)
+        public async Task<IActionResult> SignUp([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User user)
         {
             //checking if email already exists in the database
-            var queryableUsers = _context.Users.Where(u => u.Email == User.Email);
-            var user = await queryableUsers.SingleOrDefaultAsync();
-            if (ModelState.IsValid && user==null)
+            var queryableUsers = _context.Users.Where(u => u.Email == user.Email);
+            var _user = await queryableUsers.SingleOrDefaultAsync();
+            if (ModelState.IsValid && _user==null)
             {
                 //SendEmail(user.Email, "Your Library Account", "Congratulations!\n Your account has been Successfully created!");
 
                 //success, hence, show the user that he succesfully created an account
                 TempData["Success"] = "Congratulations, you've successfully created an account, feel free to sign in";
-                _context.Add(user);
+                _context.Add(_user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
