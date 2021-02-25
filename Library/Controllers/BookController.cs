@@ -23,10 +23,6 @@
         //POST:Book/Returned
         public async Task<IActionResult> Returned(int bookId, int orderId)
         {
-            /* completely pointless usage of await (and it's spread throughout the web app), 
-             * because since these functions fire asynchronously we don't know which one will finish first
-             * which means that in a web setting we'd have functions finishing in the wrong order => app will error/crash
-               need to chain methods so that another async call fires only after first async was completed (as far as i understood)*/
             var order = await _context.Orders.FindAsync(orderId);
             var borrowedBook = await _context.BorrowedBooks.Where(b => b.OrderID == orderId).FirstAsync();
             var book = await _context.Books.FindAsync(bookId);
@@ -62,11 +58,11 @@
         }
 
         // GET: Book/Popular
-        public IActionResult Popular()
+        public async Task<IActionResult> Popular()
         {
             /* NOT IMPLEMENTED YET */
 
-            var popularBooks = _context.Books.OrderByDescending(b => b.TimesBorrowed).Take(3);
+            var popularBooks = await _context.Books.OrderByDescending(b => b.TimesBorrowed).Take(3).ToListAsync();
 
             return View();
         }

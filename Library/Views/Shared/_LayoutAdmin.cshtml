@@ -61,6 +61,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
 
+
+    @* used to inject sections, with the same name *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

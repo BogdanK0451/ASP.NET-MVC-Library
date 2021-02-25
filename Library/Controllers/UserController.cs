@@ -56,17 +56,16 @@
         {
             return View();
         }
-
+        // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignUp([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User user)
+        public async Task<IActionResult> SignUp([Bind("ID,FirstName,LastName,Email,Password,ConfirmPassword,PermissionLevel,BooksHeld")] User User)
         {
             //checking if email already exists in the database
-            var queryableResult = _context.Users.Where(u => u.Email == user.Email);
-            var query = queryableResult.ToList();
-            if (ModelState.IsValid && !query.Any())
+            var queryableUsers = _context.Users.Where(u => u.Email == User.Email);
+            var user = await queryableUsers.SingleOrDefaultAsync();
+            if (ModelState.IsValid && user==null)
             {
-
                 //SendEmail(user.Email, "Your Library Account", "Congratulations!\n Your account has been Successfully created!");
 
                 //success, hence, show the user that he succesfully created an account
@@ -91,26 +90,23 @@
         // POST: User/Sign_In
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignIn(string email, string password)
+        public async Task<IActionResult> SignIn(string email, string password)
         {
-            var queryableResult = _context.Users.Where(u => u.Email == email && u.Password == password);
-            var query = queryableResult.ToList();
+            var queryableUsers =_context.Users.Where(u => u.Email == email && u.Password == password);
+            var user = await queryableUsers.SingleOrDefaultAsync();
 
-            if (!query.Any())
+            //what happens here? since we have to wait for the query to return a list for the next part to succeed
+            if (user == null)
             {
                 TempData["Failure"] = "Sorry, email or password was incorrect, try again.";
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-
-                foreach (var el in query)
-                {
-                    HttpContext.Session.SetString(SessionId, el.ID.ToString());
-                    HttpContext.Session.SetString(SessionEmail, el.Email);
-                    HttpContext.Session.SetString(SessionAccessLevel, el.PermissionLevel.ToString());
-                    HttpContext.Session.SetString(SessionName, el.FullName);
-                }
+                    HttpContext.Session.SetString(SessionId, user.ID.ToString());
+                    HttpContext.Session.SetString(SessionEmail, user.Email);
+                    HttpContext.Session.SetString(SessionAccessLevel, user.PermissionLevel.ToString());
+                    HttpContext.Session.SetString(SessionName, user.FullName);
                 TempData["Success"] = "You've successfully logged in!";
                 return RedirectToAction("Index", "Home");
             }
@@ -122,6 +118,7 @@
          */
 
         //renamed instead of overriding
+        //not async because we don't access the database and it can't block the "flow" of the program
         public IActionResult Sign_Out()
         {
             HttpContext.Session.Remove(SessionId);
@@ -217,11 +214,10 @@
         //GET: User/MyBooks
         public async Task<IActionResult> MyBooks()
         {
-
             //generating viewmodel for MyBooks view
             var userID = Int32.Parse(HttpContext.Session.GetString("id"));
-            var query = _context.BorrowedBooks.Where(borrowedBook => borrowedBook.UserID == userID);
-            var query2 = query.Join(_context.Orders, bookVm => bookVm.OrderID, order => order.ID,
+            var queryableBorrowedBooks = _context.BorrowedBooks.Where(borrowedBook => borrowedBook.UserID == userID);
+            var queryableJoin = queryableBorrowedBooks.Join(_context.Orders, bookVm => bookVm.OrderID, order => order.ID,
             (bookVm, order) => new
             {
                 bookID = bookVm.BookID,
@@ -230,7 +226,7 @@
             }).Join(_context.Books, bookVm => bookVm.bookID, book => book.ID,
             (bookVm, book) => new BorrowedBookVm(book.Title, book.Author, bookVm.ReturnBy));
 
-            var bookBorrowedVm = await query2.ToListAsync();
+            var bookBorrowedVm = await queryableJoin.ToListAsync();
             return View(bookBorrowedVm);
         }
 

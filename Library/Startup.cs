@@ -63,6 +63,7 @@ namespace Library
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    //default route
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             }  

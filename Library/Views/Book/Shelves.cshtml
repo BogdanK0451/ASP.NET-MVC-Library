@@ -9,6 +9,8 @@
 }
 
 @{ int j = 0;}
+
+@*modals with summary that get loaded in for all books before user opens any of them, not sure if this is the right approach*@
 @foreach (var book in Model.Books)
 {
     <div id="modal_@j" class="modal">
@@ -141,7 +143,7 @@
 </div>
 
 
-
+@*is the section tag necessary?*@
 @section Scripts{
 
     <script type="text/javascript">

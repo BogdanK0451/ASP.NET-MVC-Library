@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Models
 {
+    //Instance of DbContext represents a session with the database which can be used to query and save instances of your entities to a database
+    //Which means that we can have the same models be used in different contexts => have different databases from the same set of models?
     public class LibraryContext : DbContext
     {
         public LibraryContext(DbContextOptions<LibraryContext> options)
