@@ -11,7 +11,6 @@
     using System.Net.Mail;
     using System.Text;
     using System.Threading.Tasks;
-
     public class UserController : Controller
     {
         const string SessionId = "id";
@@ -70,7 +69,7 @@
 
                 //success, hence, show the user that he succesfully created an account
                 TempData["Success"] = "Congratulations, you've successfully created an account, feel free to sign in";
-                _context.Add(_user);
+                _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
@@ -84,7 +83,7 @@
         // GET: User/Sign_In
         public IActionResult SignIn()
         {
-            return View();
+            return View(); 
         }
 
         // POST: User/Sign_In
